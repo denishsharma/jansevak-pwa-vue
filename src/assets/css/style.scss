@@ -1,0 +1,41 @@
+@import "./inter.scss";
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+    @apply text-gray-800 font-normal;
+
+    font-family: Inter, Avenir, Helvetica, Arial, sans-serif;
+
+    font-synthesis: none;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    -webkit-text-size-adjust: 100%;
+    -webkit-tap-highlight-color: transparent;
+}
+
+body {
+    @apply m-0 p-0 overflow-hidden w-screen h-screen;
+    height: calc(var(--vh, 1vh) * 100);
+}
+
+button {
+    @apply appearance-none outline-none cursor-pointer;
+}
+
+input {
+    font: inherit;
+    font-weight: 500;
+
+    &::placeholder {
+        @apply text-gray-300 font-normal;
+    }
+}
+
+::-webkit-scrollbar {
+    width: 0;
+    background: transparent;
+}
