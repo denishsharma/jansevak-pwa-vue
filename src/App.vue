@@ -1,12 +1,13 @@
 <script setup lang="ts">
 import BaseLayout from "@/layouts/BaseLayout.vue";
+import router from "@/router";
 </script>
 
 <template>
     <BaseLayout>
         <router-view v-slot="{ Component, route }">
             <transition name="page-scale-slide" mode="out-in">
-                <component :is="Component" :key="route.fullPath" />
+                <component :is="Component" class="w-full" />
             </transition>
         </router-view>
     </BaseLayout>

@@ -14,11 +14,11 @@
             </div>
         </AppHeader>
 
-        <AppBody ref="refAppBody" class="grow pt-12" :class="$attrs.class">
+        <AppBody ref="refAppBody" :class="clsx(bodyClass)" class="grow pt-12">
             <slot name="body" />
         </AppBody>
 
-        <AppFooter v-if="$slots.footer">
+        <AppFooter v-if="$slots.footer" :custom-padding="footerPadding">
             <slot name="footer" />
         </AppFooter>
     </AppPageBaseLayout>
@@ -30,6 +30,18 @@ import AppPageBaseLayout from "@/layouts/AppPageBaseLayout.vue";
 import AppHeader from "@/components/sections/AppHeader.vue";
 import AppBody from "@/components/sections/AppBody.vue";
 import AppFooter from "@/components/sections/AppFooter.vue";
+import { clsx } from "clsx";
+
+defineProps({
+    bodyClass: {
+        type: String,
+        default: "",
+    },
+    footerPadding: {
+        type: String,
+        default: "py-4",
+    },
+});
 
 const refAppBody = ref<InstanceType<typeof AppBody> | null>(null);
 const refAppHeader = ref<InstanceType<typeof AppHeader> | null>(null);

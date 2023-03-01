@@ -6,10 +6,6 @@
     </PageHeading>
 
     <AppComponentBase>
-        <div class="h-[160px] bg-gray-100 border mb-6 rounded-lg"></div>
-    </AppComponentBase>
-
-    <AppComponentBase>
         <div class="flex flex-col gap-2">
 
             <label class="relative">
@@ -74,6 +70,7 @@
         </div>
     </AppComponentBase>
 
+
     <VerifyOTPModalPage ref="refVerifyOtpModal" @on-verify="onVerifyOtp" />
 </template>
 
@@ -83,6 +80,7 @@ import { vMaska } from "maska";
 import AppComponentBase from "@/layouts/AppComponentBase.vue";
 import PageHeading from "@/components/headings/PageHeading.vue";
 import VerifyOTPModalPage from "@/modals/verify-otp/VerifyOTPModalPage.vue";
+import Button from "@/components/button/Button.vue";
 
 const refVerifyOtpModal = ref<InstanceType<typeof VerifyOTPModalPage>>();
 
