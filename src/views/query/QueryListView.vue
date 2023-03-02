@@ -126,10 +126,8 @@ import PullToRefresh from "pulltorefreshjs";
 import { htmlMarkup, cssMarkup, spinnerMarkup, arrowMarkup } from "@/config/pullToRefresh";
 import QueryCategorySheet from "@/sheets/query-category/QueryCategorySheet.vue";
 import { useQueryStore } from "@/stores/queryStore";
-import { useEventBus } from "@vueuse/core";
 
 const queryStore = useQueryStore();
-const eventBus = useEventBus<string>("event-bus");
 
 const FAQModalPage = defineAsyncComponent(() => import("@/modals/faq/FAQModalPage.vue"));
 
@@ -147,11 +145,11 @@ const openFAQModal = () => {
 
 const openQueryCategorySheet = () => {
     console.log("openQueryCategorySheet");
-    eventBus.emit("open:query-category-sheet");
+
 };
 
-onMounted(() => {
-    const ptr = PullToRefresh.init({
+const initiatePullToRefresh = () => {
+    PullToRefresh.init({
         mainElement: refPageContent.value,
         triggerElement: refPageContent.value,
         distIgnore: 30,
@@ -159,6 +157,7 @@ onMounted(() => {
         getStyles: () => cssMarkup(),
         iconArrow: arrowMarkup(),
         iconRefreshing: spinnerMarkup(),
+        instructionsRefreshing: "Refreshing Queries...",
         onRefresh() {
             return new Promise<void>(function (resolve) {
                 setTimeout(function () {
@@ -170,14 +169,10 @@ onMounted(() => {
             return !(this.mainElement as unknown as HTMLElement)?.scrollTop;
         },
     });
-});
+};
 
-onActivated(() => {
-    console.log("onActivated");
-});
-
-onDeactivated(() => {
-    console.log("onDeactivated");
+onMounted(() => {
+    initiatePullToRefresh();
 });
 
 onUnmounted(() => {

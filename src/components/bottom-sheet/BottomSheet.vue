@@ -46,6 +46,8 @@
 import { TransitionRoot, TransitionChild, Dialog, DialogPanel } from "@headlessui/vue";
 import { nextTick, ref } from "vue";
 import router from "@/router";
+import { useEventBus } from "@vueuse/core";
+import { globalEventKey } from "@/helpers/globalEvent";
 
 const props = defineProps({
     id: {
@@ -59,6 +61,8 @@ const props = defineProps({
         default: true,
     },
 });
+
+const globalEventBus = useEventBus(globalEventKey);
 
 const isOpen = ref(false);
 const refHandle = ref<HTMLElement | null>(null);
@@ -97,6 +101,7 @@ const closeModal = () => {
     isOpen.value = false;
     window.removeEventListener("popstate", popstateHandler);
     console.log("remove event listeners", props.id);
+    emitSheetClose();
 };
 
 const openModal = () => {
@@ -119,6 +124,16 @@ const popstateHandler = (e: PopStateEvent) => {
     closeModal();
 };
 
+const emitSheetClose = () => {
+    globalEventBus.emit({
+        type: "trigger:sheet",
+        trigger: true,
+        event: "onSheetClose",
+        payload: {
+            sheet: props.id,
+        },
+    });
+};
 
 const attachEventListeners = () => {
     window.addEventListener("popstate", popstateHandler);

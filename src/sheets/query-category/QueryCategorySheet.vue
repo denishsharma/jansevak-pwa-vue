@@ -1,5 +1,5 @@
 <template>
-    <BottomSheet id="query-category" ref="refBottomSheet" :close-on-backdrop-click="false" class="max-h-[66%]">
+    <BottomSheet :id="sheetId" ref="refBottomSheet" :close-on-backdrop-click="false" class="max-h-[66%]">
         <div class="overflow-y-auto h-full">
             <div class="bg-gray-100 h-[100px] mb-4">
                 query category
@@ -12,25 +12,26 @@
 import { onMounted, onUnmounted, ref } from "vue";
 import BottomSheet from "@/components/bottom-sheet/BottomSheet.vue";
 import { useEventBus } from "@vueuse/core";
+import { type GlobalEvent, globalEventKey } from "@/helpers/globalEvent";
 
-const eventBus = useEventBus<string>("event-bus");
+const globalEventBus = useEventBus(globalEventKey);
 const refBottomSheet = ref<InstanceType<typeof BottomSheet>>();
 
-const listenToEvents = (event: string) => {
-    if (event === "open:query-category-sheet") {
-        openModal();
-    }
-    console.log("listenToEvents", event);
+const sheetId = "query-category";
+
+const listenToEvents = (e: GlobalEvent) => {
+    if (e.payload.sheet !== sheetId) return;
+
 };
 
 onUnmounted(() => {
     console.log("onUnmounted: QueryCategorySheet");
-    eventBus.off(listenToEvents);
+    globalEventBus.off(listenToEvents);
 });
 
 onMounted(() => {
     console.log("onMounted: QueryCategorySheet");
-    eventBus.on(listenToEvents);
+    globalEventBus.on(listenToEvents);
 });
 
 const openModal = () => {
