@@ -1,4 +1,5 @@
 @import "./inter.scss";
+@import "vue3-carousel/dist/carousel.css";
 
 @tailwind base;
 @tailwind components;
@@ -15,6 +16,9 @@
     -moz-osx-font-smoothing: grayscale;
     -webkit-text-size-adjust: 100%;
     -webkit-tap-highlight-color: transparent;
+
+    --vc-pgn-background-color: theme("colors.gray.100");
+    --vc-pgn-active-color: theme("colors.orange.500");
 }
 
 body {
@@ -38,4 +42,20 @@ input, textarea {
 ::-webkit-scrollbar {
     width: 0;
     background: transparent;
+}
+
+.fade-enter-active,
+.fade-leave-active {
+    transition: opacity 200ms
+}
+
+.fade-enter,
+.fade-leave-to {
+    opacity: 0
+}
+
+.carousel__pagination-button {
+    &::after {
+        @apply h-2 w-2 rounded-full transition-all;
+    }
 }

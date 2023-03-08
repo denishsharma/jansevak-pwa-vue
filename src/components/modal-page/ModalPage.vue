@@ -112,6 +112,7 @@ const attachEventListeners = () => {
 const emit = defineEmits(["on-close", "on-open"]);
 
 defineExpose({
+    isSuspend,
     openModal,
     goBack,
     closeModal,

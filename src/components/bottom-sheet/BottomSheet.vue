@@ -93,7 +93,7 @@ const goBack = () => {
 
 const closeModalOnBackdropClick = () => {
     if (props.closeOnBackdropClick) {
-        goBack();
+        router.back();
     }
 };
 
@@ -101,6 +101,7 @@ const closeModal = () => {
     isOpen.value = false;
     window.removeEventListener("popstate", popstateHandler);
     console.log("remove event listeners", props.id);
+    emit("on-close");
     emitSheetClose();
 };
 
@@ -111,6 +112,7 @@ const openModal = () => {
     nextTick(() => {
         attachEventListeners();
     });
+    emit("on-open");
 };
 
 const popstateHandler = (e: PopStateEvent) => {
@@ -140,7 +142,10 @@ const attachEventListeners = () => {
     console.log("attach event listeners", props.id);
 };
 
+const emit = defineEmits(["on-close", "on-open"]);
+
 defineExpose({
+    isSuspend,
     openModal,
     goBack,
     closeModal,

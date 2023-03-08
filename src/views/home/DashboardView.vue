@@ -1,6 +1,10 @@
 <template>
     <div ref="refPageContent" class="grow -mb-8 pb-8">
-        <AppComponentBase>
+        <AppComponentBase class="pb-6">
+            <CarouselHomeFragment />
+        </AppComponentBase>
+
+        <AppComponentBase class="pb-6">
             <div class="grid grid-cols-2 gap-x-3 gap-y-3">
                 <button class="text-left overflow-hidden relative rounded-xl border border-gray-200/[0.7] select-none px-2.5 py-2.5 flex items-center hover:bg-gray-50 active:bg-gray-100 focus:outline-none transition-all" @click="openCreateQueryModal">
                     <div class="bg-orange-50 text-orange-500 flex justify-center items-center h-9 w-9 rounded-lg">
@@ -70,6 +74,17 @@
             </div>
         </AppComponentBase>
 
+        <AppComponentBase>
+            <div class="flex flex-col gap-1">
+                <div class="bg-amber-200 flex items-center h-6 text-sm">
+                    <div class="bg-red-300 leading-tight font-semibold">
+                        My Nagarik ID
+                    </div>
+                </div>
+                <NagarikCard />
+            </div>
+        </AppComponentBase>
+
         <FAQModalPage ref="refFAQModal" />
         <CreateQueryModalPage ref="refCreateQueryModalPage" />
     </div>
@@ -80,6 +95,8 @@ import { defineAsyncComponent, onActivated, onDeactivated, onMounted, onUnmounte
 import PullToRefresh from "pulltorefreshjs";
 import { arrowMarkup, cssMarkup, htmlMarkup, spinnerMarkup } from "@/config/pullToRefresh";
 import AppComponentBase from "@/layouts/AppComponentBase.vue";
+import NagarikCard from "@/components/nagarik-card/NagarikCard.vue";
+import CarouselHomeFragment from "@/fragments/home/CarouselHomeFragment.vue";
 
 const FAQModalPage = defineAsyncComponent(() => import("@/modals/faq/FAQModalPage.vue"));
 const CreateQueryModalPage = defineAsyncComponent(() => import("@/modals/query/CreateQueryModalPage.vue"));

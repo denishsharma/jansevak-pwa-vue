@@ -79,7 +79,7 @@ import { ref } from "vue";
 import { vMaska } from "maska";
 import AppComponentBase from "@/layouts/AppComponentBase.vue";
 import PageHeading from "@/components/headings/PageHeading.vue";
-import VerifyOTPModalPage from "@/modals/verify-otp/VerifyOTPModalPage.vue";
+import VerifyOTPModalPage from "@/modals/auth/VerifyOTPModalPage.vue";
 import Button from "@/components/button/Button.vue";
 
 const refVerifyOtpModal = ref<InstanceType<typeof VerifyOTPModalPage>>();

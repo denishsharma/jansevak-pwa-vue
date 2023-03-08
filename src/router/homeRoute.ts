@@ -3,6 +3,7 @@ import type { RouteRecordRaw } from "vue-router";
 const homeRoute: RouteRecordRaw[] = [
     {
         path: "",
+        name: "home.redirect",
         redirect: "/home",
     },
     {

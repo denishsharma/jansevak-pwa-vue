@@ -13,6 +13,12 @@ const app = createApp(App);
 app.use(createPinia());
 app.use(router);
 
+app.config.errorHandler = (err, vm, info) => {
+    console.log(err);
+    console.log(vm);
+    console.log(info);
+};
+
 app.config.globalProperties.emitter = emitter;
 app.mount("#app");
 

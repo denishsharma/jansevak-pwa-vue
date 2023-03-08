@@ -1,7 +1,6 @@
 import type { RouteRecordRaw } from "vue-router";
 import AuthBase from "@/layouts/AuthBase.vue";
-import LoginView from "@/views/auth/LoginView.vue";
-import VerifyOTPModalPage from "@/modals/verify-otp/VerifyOTPModalPage.vue";
+import VerifyOTPModalPage from "@/modals/auth/VerifyOTPModalPage.vue";
 
 const authRoute: RouteRecordRaw[] = [
     {
@@ -15,7 +14,7 @@ const authRoute: RouteRecordRaw[] = [
             {
                 path: "login",
                 name: "auth.login",
-                component: LoginView,
+                component: () => import("@/views/auth/LoginView.vue"),
             },
         ],
     },

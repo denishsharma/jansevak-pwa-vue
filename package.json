@@ -23,7 +23,8 @@
         "pinia": "^2.0.32",
         "preline": "^1.7.0",
         "vue": "^3.2.47",
-        "vue-router": "^4.1.6"
+        "vue-router": "^4.1.6",
+        "vue3-carousel": "^0.2.12"
     },
     "devDependencies": {
         "@tailwindcss/aspect-ratio": "^0.4.2",

@@ -1,8 +1,8 @@
 <template>
-    <ProtectedView>
-        <AppContainerBase body-class="pb-8" footer-padding="py-1 -mx-3">
+    <ModalPage id="auth-login" ref="refModalPage">
+        <AppContainerBase>
             <template #header>
-                <div v-if="!isOnMenu">
+                <div class="flex items-center">
                     <svg fill="none" height="22" viewBox="0 0 55 22" width="55" xmlns="http://www.w3.org/2000/svg">
                         <path clip-rule="evenodd" d="M22.1741 17.9925H22.6187V19.7429H24.8926V17.9925H25.3376V21.9324H24.8926V20.1595H22.6187V21.9324H22.1741V17.9925Z" fill="#1B1918" fill-rule="evenodd" />
                         <path clip-rule="evenodd" d="M28.7135 22C28.4135 22 28.1405 21.9454 27.8946 21.8367C27.6489 21.7279 27.4378 21.5807 27.2614 21.3948C27.085 21.2092 26.949 20.9933 26.8533 20.7475C26.7577 20.5016 26.7097 20.2437 26.7097 19.9738V19.9624C26.7097 19.6922 26.7584 19.4332 26.8561 19.1857C26.9538 18.9379 27.0906 18.7213 27.267 18.5354C27.4436 18.3498 27.6555 18.2016 27.9029 18.0908C28.1509 17.9803 28.425 17.9248 28.7246 17.9248C29.0251 17.9248 29.2982 17.9793 29.5438 18.0881C29.7895 18.1969 30.0006 18.3441 30.177 18.5299C30.3534 18.7155 30.4896 18.9314 30.5851 19.1773C30.6807 19.4231 30.7287 19.6809 30.7287 19.9509C30.7328 19.9549 30.7327 19.9586 30.7287 19.9624C30.7287 20.2325 30.68 20.4915 30.5825 20.7391C30.4849 20.9869 30.3478 21.2035 30.1717 21.3894C29.995 21.575 29.7829 21.7232 29.5355 21.834C29.2877 21.9444 29.0137 22 28.7135 22ZM28.7246 21.5891C28.95 21.5891 29.1576 21.547 29.3469 21.4625C29.5365 21.3779 29.6986 21.2625 29.8339 21.1163C29.9689 20.9701 30.075 20.7991 30.1516 20.604C30.2285 20.409 30.2673 20.1988 30.2673 19.9738V19.9624C30.2673 19.7374 30.2285 19.5262 30.1516 19.3292C30.075 19.1322 29.967 18.9604 29.8281 18.8142C29.6892 18.6677 29.5253 18.5515 29.3355 18.4653C29.1462 18.3788 28.9388 18.3357 28.7135 18.3357C28.4884 18.3357 28.2811 18.3778 28.0918 18.4623C27.9019 18.5468 27.74 18.6623 27.6046 18.8085C27.4697 18.9548 27.3637 19.1255 27.2868 19.3208C27.2099 19.5158 27.1714 19.726 27.1714 19.9509V19.9624C27.1714 20.1874 27.2099 20.3986 27.2868 20.5956C27.3637 20.7926 27.4716 20.9643 27.6106 21.1105C27.7495 21.257 27.9134 21.3733 28.1029 21.4595C28.2925 21.546 28.4999 21.5891 28.7246 21.5891Z" fill="#1B1918" fill-rule="evenodd" />
@@ -36,194 +36,163 @@
                         <path clip-rule="evenodd" d="M9.85859 8.40661C9.11589 8.40642 8.37288 8.40367 7.6299 8.4091C7.50131 8.4098 7.46091 8.37122 7.46486 8.24263C7.50054 7.11469 7.88268 6.11598 8.58803 5.2412C9.67894 3.88878 11.1213 3.15818 12.8154 2.88881C13.1081 2.8427 13.4072 2.83582 13.7027 2.80526C13.8154 2.79392 13.8479 2.83681 13.8471 2.94585C13.8433 3.5463 13.8459 4.14682 13.8459 4.74701C13.8461 5.43203 13.8445 6.11727 13.8482 6.80197C13.8487 6.90756 13.8292 6.95492 13.7092 6.96946C13.2274 7.02747 12.8155 7.2245 12.5152 7.62006C12.3809 7.79675 12.2954 7.99399 12.2619 8.21413C12.2254 8.45121 12.2415 8.40485 12.0336 8.40592C11.3087 8.40841 10.5837 8.40684 9.8587 8.40661H9.85859Z" fill="#F07C00" fill-rule="evenodd" />
                     </svg>
                 </div>
-
-                <div v-if="isOnMenu" class="flex items-center">
-                    <button class="-ml-[0.725rem] py-2 px-2 select-none inline-flex flex-shrink-0 items-center gap-2 rounded-full border border-transparent text-gray-800 hover:bg-gray-100 focus:outline-none transition-all" type="button" @click="goBack">
-                        <svg class="" fill="none" height="22" viewBox="0 0 22 22" width="22" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M9.78401 4.09501C9.6065 4.10018 9.43796 4.17424 9.31408 4.3015L2.93438 10.6812C2.66754 10.9481 2.66754 11.3808 2.93438 11.6478L9.31408 18.0275C9.48552 18.206 9.74011 18.278 9.97964 18.2155C10.2192 18.1531 10.4062 17.966 10.4687 17.7265C10.5311 17.4869 10.4592 17.2323 10.2806 17.0609L5.06777 11.848H18.4555C18.702 11.8515 18.9313 11.722 19.0556 11.5091C19.1799 11.2962 19.1799 11.0328 19.0556 10.8199C18.9313 10.607 18.702 10.4775 18.4555 10.4809H5.06777L10.2806 5.26807C10.4825 5.0715 10.543 4.77125 10.4332 4.51182C10.3234 4.25238 10.0656 4.0869 9.78401 4.09501L9.78401 4.09501Z" fill="currentColor" />
-                        </svg>
-                    </button>
-                </div>
             </template>
 
             <template #body>
-                <router-view v-slot="{ Component, route }">
-                    <transition appear mode="out-in" name="page-slide">
-                        <keep-alive>
-                            <suspense>
-                                <template #default>
-                                    <component :is="Component" :key="route.fullPath" />
-                                </template>
+                <PageHeading class="mb-6" emphasis="Jansevak" title="Welcome to">
+                    <template #subtitle>
+                        Enter your Phone Number to get started. We will send you a verification code.
+                    </template>
+                </PageHeading>
 
-                                <template #fallback>
-                                    Loading...
-                                </template>
-                            </suspense>
-                        </keep-alive>
-                    </transition>
-                </router-view>
-            </template>
-
-            <template #footer>
-                <div class="flex items-stretch justify-center gap-0.5">
-                    <router-link v-slot="{ navigate, isActive }" custom to="/home">
-                        <button :class="isActive ? 'text-orange-500' : 'hover:bg-gray-100 active:bg-gray-200'" class="rounded-lg  select-none py-2 px-1.5 grow basis-full focus:outline-none transition-all overflow-hidden" role="link" @click="navigate">
-                            <div class="gap-0.5 flex flex-col items-center">
-                                <div class="h-6">
-                                    <svg class="w-full h-full" fill="none" height="22" viewBox="0 0 22 22" width="22" xmlns="http://www.w3.org/2000/svg">
-                                        <path d="M16.5003 19.2504H5.50005C3.98111 19.2504 2.75 18.0193 2.75 16.5003V8.03477C2.75 7.03559 3.29176 6.11615 4.16444 5.63123L9.66454 2.57592C10.4951 2.11483 11.5052 2.11483 12.3358 2.57592L17.8359 5.63123C18.7085 6.11615 19.2503 7.0365 19.2503 8.03477V16.5003C19.2503 18.0193 18.0192 19.2504 16.5003 19.2504Z" fill="currentColor" opacity="0.35" />
-                                        <path d="M13.7502 19.2503H8.25012V13.7502C8.25012 12.7373 9.07055 11.9169 10.0835 11.9169H11.9169C12.9298 11.9169 13.7502 12.7373 13.7502 13.7502V19.2503Z" fill="currentColor" />
-                                    </svg>
-                                </div>
-                                <div class="text-xxs font-semibold uppercase">Home</div>
-                            </div>
-                        </button>
-                    </router-link>
-
-                    <router-link v-slot="{ navigate, isActive }" custom to="/queries">
-                        <button :class="isActive ? 'text-orange-500' : 'hover:bg-gray-100 active:bg-gray-200'" class="rounded-lg  select-none py-2 px-1.5 grow basis-full focus:outline-none transition-all overflow-hidden" role="link" @click="navigate">
-                            <div class="gap-0.5 flex flex-col items-center">
-                                <div class="h-6">
-                                    <svg fill="none" height="22" viewBox="0 0 22 22" width="22" xmlns="http://www.w3.org/2000/svg">
-                                        <path d="M5.50012 15.5836V4.58342C5.50012 3.06448 6.73123 1.83337 8.25017 1.83337H15.5836C17.1026 1.83337 18.3337 3.06448 18.3337 4.58342V15.5836C18.3337 17.1026 17.1026 18.3337 15.5836 18.3337H8.25017C6.73123 18.3337 5.50012 17.1026 5.50012 15.5836Z" fill="currentColor" opacity="0.35" />
-                                        <path d="M8.25017 18.3336C6.73122 18.3336 5.50012 17.1025 5.50012 15.5836V4.58337C4.48718 4.58337 3.66675 5.40381 3.66675 6.41674V17.4169C3.66675 18.9359 4.89785 20.167 6.4168 20.167H13.7503C14.7632 20.167 15.5836 19.3466 15.5836 18.3336H8.25017Z" fill="currentColor" />
-                                        <path d="M11.8096 11.8921H11.8041C11.19 11.8921 10.716 11.3375 10.8215 10.7325C11.1423 8.8872 12.5787 8.82304 12.5787 7.67718C12.5787 7.35909 12.5237 6.64683 11.7574 6.64683C11.3431 6.64683 11.0992 6.91175 10.9571 7.19409C10.7655 7.57635 10.3237 7.76427 9.90294 7.69001C9.26493 7.57635 8.87351 6.8925 9.14393 6.30399C9.53077 5.46339 10.3228 4.58337 11.8912 4.58337C14.4359 4.58337 14.777 6.57624 14.777 7.51309C14.777 9.7278 13.1278 9.8103 12.7859 11.0863C12.6622 11.5465 12.2863 11.8921 11.8096 11.8921ZM13.1315 14.2388C13.1315 14.6165 13.0151 14.9355 12.7813 15.1949C12.5467 15.4534 12.2396 15.5836 11.8619 15.5836C11.4824 15.5836 11.1762 15.4534 10.9425 15.1949C10.7087 14.9355 10.5905 14.6165 10.5905 14.2388C10.5905 13.8694 10.7087 13.5513 10.9425 13.2809C11.1762 13.0123 11.4824 12.8784 11.8619 12.8784C12.2396 12.8784 12.5467 13.0123 12.7813 13.2809C13.0151 13.5513 13.1315 13.8703 13.1315 14.2388Z" fill="currentColor" />
-                                    </svg>
-                                </div>
-                                <div class="text-xxs font-semibold uppercase">Queries</div>
-                            </div>
-                        </button>
-                    </router-link>
-
-                    <button class="rounded-lg text-gray-500 select-none py-2 px-1.5 grow basis-full hover:bg-gray-100 active:bg-gray-200 focus:outline-none transition-all overflow-hidden" @click="openCreateNewSheet">
-                        <div class="gap-0.5 flex flex-col items-center">
-                            <div class="h-6">
+                <AppComponentBase>
+                    <div class="flex flex-col gap-2">
+                        <label class="relative">
+                            <input v-maska class="py-3 px-4 pl-12 block w-full border-gray-200/[0.7] rounded-lg text-sm focus:z-10 focus:border-orange-500 focus:ring-orange-500" data-maska="##########" placeholder="Enter your phone number" type="text">
+                            <div class="absolute inset-y-0 left-0 flex items-center pointer-events-none z-20 pl-3.5">
                                 <svg fill="none" height="22" viewBox="0 0 22 22" width="22" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M16.5003 19.2503H5.50005C3.98111 19.2503 2.75 18.0192 2.75 16.5003V5.50005C2.75 3.98111 3.98111 2.75 5.50005 2.75H16.5003C18.0192 2.75 19.2503 3.98111 19.2503 5.50005V16.5003C19.2503 18.0192 18.0192 19.2503 16.5003 19.2503Z" fill="currentColor" opacity="0.35" />
-                                    <path d="M15.5835 10.0834H11.9168V6.41668C11.9168 5.91067 11.5061 5.5 11.0001 5.5C10.4941 5.5 10.0834 5.91067 10.0834 6.41668V10.0834H6.41668C5.91067 10.0834 5.5 10.4941 5.5 11.0001C5.5 11.5061 5.91067 11.9168 6.41668 11.9168H10.0834V15.5835C10.0834 16.0895 10.4941 16.5002 11.0001 16.5002C11.5061 16.5002 11.9168 16.0895 11.9168 15.5835V11.9168H15.5835C16.0895 11.9168 16.5002 11.5061 16.5002 11.0001C16.5002 10.4941 16.0895 10.0834 15.5835 10.0834Z" fill="currentColor" />
+                                    <path d="M7.56262 18.7347H2.83598C1.64942 18.7347 0.6875 17.7727 0.6875 16.5862V5.4141C0.6875 4.22754 1.64942 3.26562 2.83598 3.26562H7.56262V18.7347Z" fill="#FF9E1C" />
+                                    <path d="M14.4377 3.26562H7.56262V18.7347H14.4377V3.26562Z" fill="white" />
+                                    <path d="M19.1644 18.7347H14.4377V3.26562H19.1644C20.351 3.26562 21.3129 4.22754 21.3129 5.4141V16.5862C21.3129 17.7727 20.351 18.7347 19.1644 18.7347Z" fill="#6DA544" />
+                                    <path d="M11.0002 8.422C9.57629 8.422 8.422 9.57629 8.422 11.0002C8.422 12.424 9.57629 13.5783 11.0002 13.5783C12.424 13.5783 13.5783 12.424 13.5783 11.0002C13.5783 9.57629 12.424 8.422 11.0002 8.422ZM11.0002 12.7189C10.0509 12.7189 9.28139 11.9494 9.28139 11.0002C9.28139 10.0509 10.0509 9.28139 11.0002 9.28139C11.9494 9.28139 12.7189 10.0509 12.7189 11.0002C12.7189 11.9494 11.9494 12.7189 11.0002 12.7189Z" fill="#0053B5" />
+                                    <path d="M11.0001 9.78479L11.2327 10.4387L11.8595 10.1407L11.5616 10.7676L12.2155 11.0001L11.5616 11.2327L11.8595 11.8595L11.2327 11.5616L11.0001 12.2155L10.7676 11.5616L10.1407 11.8595L10.4387 11.2327L9.78479 11.0001L10.4387 10.7676L10.1407 10.1407L10.7676 10.4387L11.0001 9.78479Z" fill="#0053B5" />
                                 </svg>
                             </div>
-                            <div class="text-xxs font-semibold uppercase">Create</div>
-                        </div>
-                    </button>
+                        </label>
 
-                    <router-link v-slot="{ navigate, isActive }" custom to="/board">
-                        <button :class="isActive ? 'text-orange-500' : 'hover:bg-gray-100 active:bg-gray-200'" class="rounded-lg  select-none py-2 px-1.5 grow basis-full focus:outline-none transition-all overflow-hidden" role="link" @click="navigate">
-                            <div class="gap-0.5 flex flex-col items-center">
-                                <div class="h-6">
-                                    <svg fill="none" height="22" viewBox="0 0 22 22" width="22" xmlns="http://www.w3.org/2000/svg">
-                                        <path d="M4.58342 6.41675C3.06448 6.41675 1.83337 7.64785 1.83337 9.1668V12.8335C1.83337 14.3525 3.06448 15.5836 4.58342 15.5836H8.25016V6.41675H4.58342Z" fill="currentColor" />
-                                        <path d="M18.1191 1.97269C17.4316 1.6876 16.646 1.84527 16.1208 2.37053C14.9951 3.4953 11.387 6.41677 8.25012 6.41677C7.2381 6.41677 6.41675 7.23812 6.41675 8.25014V13.7502C6.41675 14.7623 7.2381 15.5836 8.25012 15.5836C11.3668 15.5836 14.9896 18.506 16.1208 19.6298C16.4718 19.9809 16.9394 20.167 17.4169 20.167C17.6535 20.167 17.8918 20.1212 18.1191 20.0277C18.8039 19.7435 19.2503 19.0753 19.2503 18.3337V3.66672C19.2503 2.92512 18.8039 2.25686 18.1191 1.97269Z" fill="currentColor" opacity="0.35" />
-                                        <path d="M8.25011 11.9169H4.58337C4.58337 11.9169 5.50006 18.6307 5.50006 18.792C5.50006 19.551 6.11607 20.167 6.87508 20.167C7.6341 20.167 8.25011 19.551 8.25011 18.792C8.25011 18.6307 8.25011 11.9169 8.25011 11.9169Z" fill="currentColor" />
-                                        <path d="M19.2504 8.41882V13.5825C20.3165 13.2039 21.0837 12.1965 21.0837 11.0011C21.0837 9.80577 20.3165 8.79741 19.2504 8.41882Z" fill="currentColor" />
-                                    </svg>
-                                </div>
-                                <div class="text-xxs font-semibold uppercase">Board</div>
+                        <label v-if="loginMode === 'password'" class="relative">
+                            <input class="py-3 px-4 pl-12 block w-full border-gray-200/[0.7] rounded-lg text-sm focus:z-10 focus:border-orange-500 focus:ring-orange-500" placeholder="Enter your password" type="password">
+                            <div class="absolute inset-y-0 left-0 flex items-center pointer-events-none z-20 pl-3.5 text-gray-600">
+                                <svg fill="none" height="22" viewBox="0 0 22 22" width="22" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M16.5003 19.2503H5.50005C3.98111 19.2503 2.75 18.0192 2.75 16.5003V9.1668C2.75 7.64785 3.98111 6.41675 5.50005 6.41675H16.5003C18.0192 6.41675 19.2503 7.64785 19.2503 9.1668V16.5003C19.2503 18.0192 18.0192 19.2503 16.5003 19.2503Z" fill="currentColor" opacity="0.35" />
+                                    <path d="M7.33337 6.41673C7.33337 4.39177 8.97515 2.74999 11.0001 2.74999C13.0251 2.74999 14.6668 4.39177 14.6668 6.41673H16.5002C16.5002 3.37884 14.038 0.916626 11.0001 0.916626C7.96221 0.916626 5.5 3.37884 5.5 6.41673H7.33337Z" fill="currentColor" />
+                                    <path d="M11.0001 11.0001C9.98718 11.0001 9.16675 11.8206 9.16675 12.8335C9.16675 13.8464 9.98718 14.6669 11.0001 14.6669C12.0131 14.6669 12.8335 13.8464 12.8335 12.8335C12.8335 11.8206 12.0131 11.0001 11.0001 11.0001Z" fill="currentColor" />
+                                </svg>
                             </div>
-                        </button>
-                    </router-link>
+                        </label>
+                    </div>
+                </AppComponentBase>
 
-                    <router-link v-slot="{ navigate, isActive }" custom to="/menu">
-                        <button :class="isActive ? 'text-orange-500' : 'hover:bg-gray-100 active:bg-gray-200'" class="rounded-lg  select-none py-2 px-1.5 grow basis-full focus:outline-none transition-all overflow-hidden" role="link" @click="navigate">
-                            <div class="gap-0.5 flex flex-col items-center">
-                                <div class="h-6">
-                                    <svg fill="none" height="22" viewBox="0 0 22 22" width="22" xmlns="http://www.w3.org/2000/svg">
-                                        <path d="M6.41673 10.0835C8.44182 10.0835 10.0835 8.44182 10.0835 6.41673C10.0835 4.39165 8.44182 2.75 6.41673 2.75C4.39165 2.75 2.75 4.39165 2.75 6.41673C2.75 8.44182 4.39165 10.0835 6.41673 10.0835Z" fill="currentColor" />
-                                        <path d="M15.5836 10.0835C17.6087 10.0835 19.2503 8.44182 19.2503 6.41673C19.2503 4.39165 17.6087 2.75 15.5836 2.75C13.5585 2.75 11.9169 4.39165 11.9169 6.41673C11.9169 8.44182 13.5585 10.0835 15.5836 10.0835Z" fill="currentColor" opacity="0.35" />
-                                        <path d="M15.5836 19.2503C17.6087 19.2503 19.2503 17.6087 19.2503 15.5836C19.2503 13.5585 17.6087 11.9169 15.5836 11.9169C13.5585 11.9169 11.9169 13.5585 11.9169 15.5836C11.9169 17.6087 13.5585 19.2503 15.5836 19.2503Z" fill="currentColor" />
-                                        <path d="M6.41673 19.2503C8.44182 19.2503 10.0835 17.6087 10.0835 15.5836C10.0835 13.5585 8.44182 11.9169 6.41673 11.9169C4.39165 11.9169 2.75 13.5585 2.75 15.5836C2.75 17.6087 4.39165 19.2503 6.41673 19.2503Z" fill="currentColor" opacity="0.35" />
-                                    </svg>
-                                </div>
-                                <div class="text-xxs font-semibold uppercase">Menu</div>
-                            </div>
+                <AppComponentBase class="mt-3.5">
+                    <div class="flex flex-col gap-2">
+                        <button class="py-3.5 px-4 w-full font-medium text-xs select-none inline-flex justify-center items-center gap-2 rounded-lg border border-transparent bg-orange-500 text-white hover:bg-orange-600 active:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 transition-all" type="button" @click="handleLogin">
+                            Login
                         </button>
-                    </router-link>
 
-                    <CreateNewSheet ref="refCreateNewSheet" @on-create-query="openCreateQueryModalPage" />
-                    <CreateQueryModalPage ref="refCreateQueryModalPage" @on-close="onCloseCreateQueryModalPage" />
-                </div>
+                        <button v-if="loginMode === 'password'" class="py-2 px-4 w-full text-xs select-none inline-flex justify-center items-center rounded-lg border border-transparent text-gray-500 hover:bg-gray-200 active:bg-gray-300 focus:outline-none transition-all" type="button" @click="openForgotPasswordSheet">
+                            Forgot Password?&nbsp;<span class="inline font-semibold text-gray-500">Reset Password</span>
+                        </button>
+                    </div>
+                </AppComponentBase>
+
+                <AppComponentBase class="my-3">
+                    <div class="select-none w-full flex justify-evenly gap-3 items-center">
+                        <div class="h-px w-full grow bg-gray-100"></div>
+                        <span class="text-xs text-gray-500 leading-tight shrink-0">or</span>
+                        <div class="h-px w-full grow bg-gray-100"></div>
+                    </div>
+                </AppComponentBase>
+
+                <AppComponentBase>
+                    <transition mode="out-in" name="fade">
+                        <button class="py-3.5 px-4 w-full text-xs font-medium select-none inline-flex justify-center items-center gap-2 rounded-lg border border-transparent bg-gray-500 text-white hover:bg-gray-600 active:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition-all" type="button" @click="changeLoginMode">
+                            Log in using {{ loginMode === "password" ? "OTP" : "Password" }}
+                        </button>
+                    </transition>
+                </AppComponentBase>
+
+                <AppComponentBase class="mt-8 flex flex-col justify-end grow">
+                    <div class="px-4 text-gray-400 text-xxs text-center leading-tight">
+                        By proceeding, you agree to our
+                        <span class="font-semibold">Privacy Policy</span> and
+                        <span class="font-semibold">Terms and Conditions</span>
+                    </div>
+                </AppComponentBase>
+
+                <VerifyOTPModalPage ref="refVerifyOTPModal" @on-close="onCloseVerifyOTPModal" @on-verify="onVerifyOTP" />
+                <ForgotPasswordSheet ref="refForgotPasswordSheet" @on-close="onCloseForgotPasswordSheet" />
             </template>
         </AppContainerBase>
-    </ProtectedView>
+    </ModalPage>
 </template>
 
-<script setup lang="ts">
+<script lang="ts" setup>
+import { vMaska } from "maska";
+import ModalPage from "@/components/modal-page/ModalPage.vue";
 import AppContainerBase from "@/layouts/AppContainerBase.vue";
-import router from "@/router";
-import { defineAsyncComponent, onMounted, onUpdated, nextTick, ref } from "vue";
-import ProtectedView from "@/views/controller/ProtectedView.vue";
+import PageHeading from "@/components/headings/PageHeading.vue";
+import AppComponentBase from "@/layouts/AppComponentBase.vue";
+import { ref } from "vue";
+import VerifyOTPModalPage from "@/modals/auth/VerifyOTPModalPage.vue";
+import ForgotPasswordSheet from "@/sheets/forgot-password/ForgotPasswordSheet.vue";
+import { set } from "@vueuse/core";
 
-const CreateNewSheet = defineAsyncComponent(() => import("@/sheets/create-new/CreateNewSheet.vue"));
-const CreateQueryModalPage = defineAsyncComponent(() => import("@/modals/query/CreateQueryModalPage.vue"));
+const refModalPage = ref<InstanceType<typeof ModalPage>>(null);
+const refVerifyOTPModal = ref<InstanceType<typeof VerifyOTPModalPage>>();
 
-const refCreateNewSheet = ref<InstanceType<typeof CreateNewSheet> | null>(null);
-const refCreateQueryModalPage = ref<InstanceType<typeof CreateQueryModalPage> | null>(null);
-const isOnMenu = ref(false);
+const refForgotPasswordSheet = ref<InstanceType<typeof ForgotPasswordSheet>>();
 
-const checkOnMenu = () => {
-    isOnMenu.value = router.currentRoute.value.path.split("/")[1] === "menu";
+const loginMode = ref<"password" | "otp">("otp");
+
+const openVerifyOTPModal = () => {
+    refVerifyOTPModal.value?.openModal();
+    refModalPage.value?.suspend();
+};
+
+const onCloseVerifyOTPModal = () => {
+    refModalPage.value?.resume();
+};
+
+const onVerifyOTP = () => {
+    emit("on-login-success");
+};
+
+const openForgotPasswordSheet = () => {
+    refForgotPasswordSheet.value?.openModal();
+    refModalPage.value?.suspend();
+};
+
+const onCloseForgotPasswordSheet = () => {
+    refModalPage.value?.resume();
+};
+
+const openModal = () => {
+    refModalPage.value?.openModal();
+    (document.activeElement as HTMLElement)?.blur();
+};
+
+const closeModal = () => {
+    refModalPage.value?.closeModal();
 };
 
 const goBack = () => {
-    router.back();
+    refModalPage.value?.goBack();
 };
 
-const openCreateNewSheet = () => {
-    console.log("openCreateNewSheet");
-    refCreateNewSheet.value?.openModal();
+const handleLogin = () => {
+    if (loginMode.value === "otp") {
+        openVerifyOTPModal();
+    } else {
+        emit("on-login-success");
+    }
 };
 
-const onCloseCreateQueryModalPage = () => {
-    console.log("onCloseCreateQueryModalPage");
-    refCreateNewSheet.value?.resume();
+const changeLoginMode = () => {
+    loginMode.value = loginMode.value === "password" ? "otp" : "password";
 };
 
-const openCreateQueryModalPage = () => {
-    console.log("openCreateQueryModalPage");
-    refCreateQueryModalPage.value?.openModal();
-};
+const emit = defineEmits(["on-login-success"]);
 
-onMounted(() => {
-    checkOnMenu();
-});
-
-onUpdated(() => {
-    checkOnMenu();
+defineExpose({
+    loginMode,
+    openModal,
+    closeModal,
+    goBack,
+    suspend: () => refModalPage.value?.suspend(),
+    resume: () => refModalPage.value?.resume(),
 });
 </script>
 
-<style lang="scss" scoped>
-.pade-slide-enter-active,
-.pade-slide-leave-active {
-    transition: all 0.3s ease;
-}
+<style scoped>
 
-.pade-slide-enter,
-.pade-slide-leave-to {
-    transform: translateX(100%);
-}
-
-.pade-slide-leave-active {
-    transform: translateX(-100%);
-}
-
-.pade-slide-enter-active {
-    transform: translateX(0%);
-}
-
-.pade-slide-enter-to {
-    transform: translateX(0%);
-}
-
-.pade-slide-leave {
-    transform: translateX(-100%);
-}
-
-.pade-slide-enter {
-    transform: translateX(100%);
-}
-
-.pade-slide-leave-to {
-    transform: translateX(0%);
-}
 </style>
