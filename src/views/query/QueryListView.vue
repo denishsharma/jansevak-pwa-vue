@@ -9,7 +9,7 @@
         <AppComponentBase class="-mt-1 mb-5">
             <div class="flex items-center gap-2">
                 <label class="relative grow">
-                    <input :class="queryStore.query.length > 0 && 'pr-10 border-orange-300'" :value="queryStore.query" class="py-2.5 px-2 pl-10 block w-full border-gray-200/[0.7] rounded-lg text-sm focus:z-10 focus:border-orange-500 focus:ring-orange-500" name="search_query" placeholder="Enter query id" type="text" @input="e => queryStore.setQuery(e.target.value)">
+                    <input :class="queryStore.query.length > 0 && 'pr-10 border-orange-300'" :value="queryStore.query" class="py-2.5 px-2 pl-10 block w-full border-gray-200/[0.7] rounded-lg text-sm focus:z-10 focus:border-orange-500 focus:ring-orange-500" name="search_query" placeholder="Enter query id" type="text" @input="setQuerySearchTerm">
                     <div :class="queryStore.query.length > 0 ? 'text-orange-500' : 'text-gray-300'" class="absolute inset-y-0 left-0 flex items-center pointer-events-none z-[1] pl-2.5 mb-px">
                         <svg fill="none" height="22" viewBox="0 0 22 22" width="22" xmlns="http://www.w3.org/2000/svg">
                             <path d="M9.39595 2.75C5.73635 2.75 2.75 5.73635 2.75 9.39595C2.75 13.0555 5.73635 16.0419 9.39595 16.0419C10.8962 16.0419 12.2784 15.5345 13.393 14.6901L17.6855 18.9817C17.9154 19.2212 18.2568 19.3177 18.5781 19.2339C18.8993 19.1502 19.1502 18.8993 19.2339 18.5781C19.3177 18.2568 19.2212 17.9154 18.9817 17.6855L14.6901 13.393C15.5345 12.2784 16.0419 10.8962 16.0419 9.39595C16.0419 5.73635 13.0555 2.75 9.39595 2.75ZM9.39595 4.58337C12.0647 4.58337 14.2085 6.72717 14.2085 9.39595C14.2085 10.6773 13.7108 11.8346 12.9015 12.6948C12.8228 12.7518 12.7536 12.821 12.6965 12.8998C11.8362 13.71 10.6783 14.2085 9.39595 14.2085C6.72717 14.2085 4.58337 12.0647 4.58337 9.39595C4.58337 6.72718 6.72717 4.58337 9.39595 4.58337Z" fill="currentColor" />
@@ -95,7 +95,7 @@
                             </div>
                         </div>
                     </div>
-                    <button class="px-3.5 py-2 text-xs gap-2 inline-flex text-gray-500 items-center font-medium text-left hover:bg-gray-50 active:bg-gray-100 focus:outline-none transition" @click="openFAQModal">
+                    <button class="px-3.5 py-2 text-xs gap-2 inline-flex text-gray-500 items-center font-medium text-left hover:bg-gray-50 active:bg-gray-100 focus:outline-none transition" @click="openQueryDetailModal">
                         <svg class="h-4 w-4 text-gray-400 shrink-0" fill="none" height="22" viewBox="0 0 22 22" width="22" xmlns="http://www.w3.org/2000/svg">
                             <path d="M13.7502 2.75H8.25011C6.73116 2.75 5.50006 3.98111 5.50006 5.50005L4.58337 11.0002L5.50006 16.5003C5.50006 18.0192 6.73116 19.2503 8.25011 19.2503H13.7502C15.2692 19.2503 16.5003 18.0192 16.5003 16.5003L17.4169 11.0002L16.5003 5.50005C16.5003 3.98111 15.2692 2.75 13.7502 2.75Z" fill="currentColor" opacity="0.35" />
                             <path d="M3.66674 5.5H5.50011V16.5002H3.66674C2.65839 16.5002 1.83337 15.6752 1.83337 14.6668V7.33337C1.83337 6.32502 2.65839 5.5 3.66674 5.5Z" fill="currentColor" />
@@ -113,8 +113,7 @@
             </div>
         </AppComponentBase>
 
-        <FAQModalPage ref="refFAQModal" />
-        <QueryCategorySheet ref="refQueryCategorySheet" />
+        <QueryDetailModalPage ref="refQueryDetailModalPage" />
     </div>
 </template>
 
@@ -124,29 +123,31 @@ import PageHeading from "@/components/headings/PageHeading.vue";
 import AppComponentBase from "@/layouts/AppComponentBase.vue";
 import PullToRefresh from "pulltorefreshjs";
 import { htmlMarkup, cssMarkup, spinnerMarkup, arrowMarkup } from "@/config/pullToRefresh";
-import QueryCategorySheet from "@/sheets/query-category/QueryCategorySheet.vue";
 import { useQueryStore } from "@/stores/queryStore";
+import QueryDetailModalPage from "@/modals/query/QueryDetailModalPage.vue";
+import { executeAfter } from "@/helpers/general";
 
 const queryStore = useQueryStore();
 
-const FAQModalPage = defineAsyncComponent(() => import("@/modals/faq/FAQModalPage.vue"));
-
 const refPageContent = ref<string | undefined>(undefined);
-const refFAQModal = ref<InstanceType<typeof FAQModalPage>>(null);
-const refQueryCategorySheet = ref<InstanceType<typeof QueryCategorySheet>>(null);
+
+const refQueryDetailModalPage = ref<InstanceType<typeof QueryDetailModalPage> | null>(null);
+
+function openQueryDetailModal() {
+    executeAfter(() => {
+        refQueryDetailModalPage.value?.openModal();
+    });
+}
+
+function setQuerySearchTerm(event: Event) {
+    const target = event.target as HTMLInputElement;
+    queryStore.setQuery(target.value);
+}
 
 const clearSearch = () => {
     queryStore.clearQuery();
 };
 
-const openFAQModal = () => {
-    refFAQModal.value?.openModal();
-};
-
-const openQueryCategorySheet = () => {
-    console.log("openQueryCategorySheet");
-
-};
 
 const initiatePullToRefresh = () => {
     PullToRefresh.init({

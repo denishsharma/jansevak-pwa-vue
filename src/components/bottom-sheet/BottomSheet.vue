@@ -1,6 +1,6 @@
 <template>
     <TransitionRoot :show="isOpen" appear as="template">
-        <Dialog as="div" class="relative z-40" @close="closeModalOnBackdropClick">
+        <Dialog as="div" class="relative z-40 transition-all" @close="closeModalOnBackdropClick">
             <TransitionChild
                     as="template"
                     enter="duration-100 ease-out"
@@ -60,6 +60,16 @@ const props = defineProps({
         required: false,
         default: true,
     },
+    doOnOpen: {
+        type: Function,
+        required: false,
+        default: () => {},
+    },
+    doOnClose: {
+        type: Function,
+        required: false,
+        default: () => {},
+    },
 });
 
 const globalEventBus = useEventBus(globalEventKey);
@@ -101,6 +111,7 @@ const closeModal = () => {
     isOpen.value = false;
     window.removeEventListener("popstate", popstateHandler);
     console.log("remove event listeners", props.id);
+    props.doOnClose();
     emit("on-close");
     emitSheetClose();
 };
@@ -111,6 +122,7 @@ const openModal = () => {
     router.push(router.currentRoute.value.fullPath.replace(`#sheet-${props.id}`, "") + `#sheet-${props.id}`);
     nextTick(() => {
         attachEventListeners();
+        props.doOnOpen();
     });
     emit("on-open");
 };

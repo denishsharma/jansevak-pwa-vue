@@ -6,8 +6,15 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Jansevak</title>
     </head>
-    <body>
+    <body class="relative">
+        <div class="hidden absolute h-full w-full z-[1000] flex px-4 flex-col items-center bg-white" data-splash-screen>
+            <div class="h-[70%] flex flex-col items-center justify-between w-full my-auto">
+                <div class="h-[10rem] w-[10rem] bg-gray-100"></div>
+
+                <div aria-label="loading" class="animate-spin inline-block w-6 h-6 border-[3px] border-current border-t-transparent text-orange-600 rounded-full" role="status"></div>
+            </div>
+        </div>
         <div class="h-full" id="app"></div>
-        <script type="module" src="/src/main.ts"></script>
+        <script crossorigin="anonymous" src="/src/main.ts" type="module"></script>
     </body>
 </html>

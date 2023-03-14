@@ -49,10 +49,10 @@
             <template #body>
                 <router-view v-slot="{ Component, route }">
                     <transition appear mode="out-in" name="page-slide">
-                        <keep-alive>
+                        <keep-alive :exclude="['FAQModalPage']">
                             <suspense>
                                 <template #default>
-                                    <component :is="Component" :key="route.fullPath" />
+                                    <component :is="Component" :key="route.path" />
                                 </template>
 
                                 <template #fallback>
@@ -108,15 +108,19 @@
                     </button>
 
                     <router-link v-slot="{ navigate, isActive }" custom to="/board">
-                        <button :class="isActive ? 'text-orange-500' : 'hover:bg-gray-100 active:bg-gray-200'" class="rounded-lg  select-none py-2 px-1.5 grow basis-full focus:outline-none transition-all overflow-hidden" role="link" @click="navigate">
+                        <button :class="isActive ? 'text-orange-500' : 'hover:bg-gray-100 active:bg-gray-200'" class="rounded-lg group select-none py-2 px-1.5 grow basis-full focus:outline-none transition-all overflow-hidden" role="link" @click="navigate">
                             <div class="gap-0.5 flex flex-col items-center">
-                                <div class="h-6">
+                                <div class="h-6 relative">
                                     <svg fill="none" height="22" viewBox="0 0 22 22" width="22" xmlns="http://www.w3.org/2000/svg">
                                         <path d="M4.58342 6.41675C3.06448 6.41675 1.83337 7.64785 1.83337 9.1668V12.8335C1.83337 14.3525 3.06448 15.5836 4.58342 15.5836H8.25016V6.41675H4.58342Z" fill="currentColor" />
                                         <path d="M18.1191 1.97269C17.4316 1.6876 16.646 1.84527 16.1208 2.37053C14.9951 3.4953 11.387 6.41677 8.25012 6.41677C7.2381 6.41677 6.41675 7.23812 6.41675 8.25014V13.7502C6.41675 14.7623 7.2381 15.5836 8.25012 15.5836C11.3668 15.5836 14.9896 18.506 16.1208 19.6298C16.4718 19.9809 16.9394 20.167 17.4169 20.167C17.6535 20.167 17.8918 20.1212 18.1191 20.0277C18.8039 19.7435 19.2503 19.0753 19.2503 18.3337V3.66672C19.2503 2.92512 18.8039 2.25686 18.1191 1.97269Z" fill="currentColor" opacity="0.35" />
                                         <path d="M8.25011 11.9169H4.58337C4.58337 11.9169 5.50006 18.6307 5.50006 18.792C5.50006 19.551 6.11607 20.167 6.87508 20.167C7.6341 20.167 8.25011 19.551 8.25011 18.792C8.25011 18.6307 8.25011 11.9169 8.25011 11.9169Z" fill="currentColor" />
                                         <path d="M19.2504 8.41882V13.5825C20.3165 13.2039 21.0837 12.1965 21.0837 11.0011C21.0837 9.80577 20.3165 8.79741 19.2504 8.41882Z" fill="currentColor" />
                                     </svg>
+
+                                    <div :class="!isActive && 'group-hover:bg-gray-100 group-active:bg-gray-200'" class="absolute flex items-center overflow-hidden justify-center h-3.5 w-3.5 -mt-0.5 -mr-0.5 bg-white top-0 right-0 rounded-full">
+                                        <div class="h-2 w-2 rounded-full bg-red-500 animate-pulse"></div>
+                                    </div>
                                 </div>
                                 <div class="text-xxs font-semibold uppercase">Board</div>
                             </div>
@@ -150,11 +154,11 @@
 <script setup lang="ts">
 import AppContainerBase from "@/layouts/AppContainerBase.vue";
 import router from "@/router";
-import { defineAsyncComponent, onMounted, onUpdated, nextTick, ref } from "vue";
+import { onMounted, onUpdated, nextTick, ref } from "vue";
 import ProtectedView from "@/views/controller/ProtectedView.vue";
-
-const CreateNewSheet = defineAsyncComponent(() => import("@/sheets/create-new/CreateNewSheet.vue"));
-const CreateQueryModalPage = defineAsyncComponent(() => import("@/modals/query/CreateQueryModalPage.vue"));
+import CreateNewSheet from "@/sheets/create-new/CreateNewSheet.vue";
+import CreateQueryModalPage from "@/modals/query/CreateQueryModalPage.vue";
+import { executeAfter } from "@/helpers/general";
 
 const refCreateNewSheet = ref<InstanceType<typeof CreateNewSheet> | null>(null);
 const refCreateQueryModalPage = ref<InstanceType<typeof CreateQueryModalPage> | null>(null);
@@ -175,12 +179,13 @@ const openCreateNewSheet = () => {
 
 const onCloseCreateQueryModalPage = () => {
     console.log("onCloseCreateQueryModalPage");
-    refCreateNewSheet.value?.resume();
 };
 
 const openCreateQueryModalPage = () => {
-    console.log("openCreateQueryModalPage");
-    refCreateQueryModalPage.value?.openModal();
+    executeAfter(() => {
+        console.log("openCreateQueryModalPage");
+        refCreateQueryModalPage.value?.openModal();
+    }, 10);
 };
 
 onMounted(() => {

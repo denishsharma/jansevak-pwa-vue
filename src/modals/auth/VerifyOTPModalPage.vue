@@ -58,12 +58,21 @@ import { nextTick, ref } from "vue";
 import clsx from "clsx";
 import ModalPage from "@/components/modal-page/ModalPage.vue";
 import router from "@/router";
+import { useAuthStore } from "@/stores/authStore";
+import { storeToRefs } from "pinia";
+import AuthService from "@/services/auth.service";
+import { syncRef } from "@vueuse/core";
 
-const emit = defineEmits(["onVerify"]);
+const emit = defineEmits(["on-verify"]);
 
-const refModalPage = ref<InstanceType<typeof ModalPage>>(null);
-const isVerifying = ref(false);
+const refModalPage = ref<InstanceType<typeof ModalPage> | null>(null);
 const otpFields = ref<HTMLInputElement[]>([]);
+
+const isVerifying = ref(false);
+
+const authStore = useAuthStore();
+const { user } = storeToRefs(authStore);
+const { setUserToken, setUserRefreshToken, setUserPermissions } = authStore;
 
 const openModal = () => {
     refModalPage.value?.openModal();
@@ -73,25 +82,26 @@ const openModal = () => {
     (document.activeElement as HTMLElement)?.blur();
 };
 
-const closeModal = () => {
-    refModalPage.value?.closeModal();
+const handleOnSuccess = (data) => {
+    setUserPermissions(data.user.permissions);
+    setUserToken(data.jwt.token);
+    setUserRefreshToken(data.jwt.refreshToken);
+    emit("on-verify", true);
+    router.back();
 };
 
-const goBack = () => {
-    refModalPage.value?.goBack();
+const handleOnError = (data) => {
+    console.log("error", data);
 };
 
 const verifyOtp = () => {
-    isVerifying.value = true;
-
-    setTimeout(() => {
-        const otp = otpFields.value.map((field) => field.value).join("");
-        if (otp.length === 6) {
-            emit("onVerify", true);
-            router.back();
-        }
-        isVerifying.value = false;
-    }, 2000);
+    const otp = otpFields.value.map((field) => field.value).join("");
+    const { isLoading, execute } = AuthService.verify({
+        id: (user.value.id as string),
+        otp,
+    }, handleOnSuccess, handleOnError);
+    syncRef(isLoading, isVerifying);
+    execute();
 };
 
 const handleInput = (e: Event) => {
@@ -153,8 +163,8 @@ const attachEventListeners = () => {
 
 defineExpose({
     openModal,
-    closeModal,
-    goBack,
+    closeModal: () => refModalPage.value?.closeModal(),
+    goBack: () => refModalPage.value?.goBack(),
     suspend: () => refModalPage.value?.suspend(),
     resume: () => refModalPage.value?.resume(),
 });

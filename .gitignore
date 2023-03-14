@@ -16,6 +16,8 @@ coverage
 
 .env
 
+android/
+
 /cypress/videos/
 /cypress/screenshots/
 

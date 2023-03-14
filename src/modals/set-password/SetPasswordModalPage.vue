@@ -19,6 +19,7 @@
 <script lang="ts" setup>
 import ModalPage from "@/components/modal-page/ModalPage.vue";
 import AppContainerBase from "@/layouts/AppContainerBase.vue";
+import router from "@/router";
 </script>
 
 <style scoped>

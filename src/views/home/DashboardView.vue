@@ -91,26 +91,30 @@
 </template>
 
 <script lang="ts" setup>
-import { defineAsyncComponent, onActivated, onDeactivated, onMounted, onUnmounted, ref } from "vue";
+import { onMounted, onUnmounted, ref } from "vue";
 import PullToRefresh from "pulltorefreshjs";
 import { arrowMarkup, cssMarkup, htmlMarkup, spinnerMarkup } from "@/config/pullToRefresh";
 import AppComponentBase from "@/layouts/AppComponentBase.vue";
 import NagarikCard from "@/components/nagarik-card/NagarikCard.vue";
 import CarouselHomeFragment from "@/fragments/home/CarouselHomeFragment.vue";
-
-const FAQModalPage = defineAsyncComponent(() => import("@/modals/faq/FAQModalPage.vue"));
-const CreateQueryModalPage = defineAsyncComponent(() => import("@/modals/query/CreateQueryModalPage.vue"));
+import FAQModalPage from "@/modals/faq/FAQModalPage.vue";
+import CreateQueryModalPage from "@/modals/query/CreateQueryModalPage.vue";
+import { executeAfter } from "@/helpers/general";
 
 const refPageContent = ref<string | undefined>(undefined);
-const refFAQModal = ref<InstanceType<typeof FAQModalPage>>(null);
+const refFAQModal = ref<InstanceType<typeof FAQModalPage> | null>(null);
 const refCreateQueryModalPage = ref<InstanceType<typeof CreateQueryModalPage> | null>(null);
 
 const openCreateQueryModal = () => {
-    refCreateQueryModalPage.value?.openModal();
+    executeAfter(() => {
+        refCreateQueryModalPage.value?.openModal();
+    });
 };
 
 const openFAQModal = () => {
-    refFAQModal.value?.openModal();
+    executeAfter(() => {
+        refFAQModal.value?.openModal();
+    });
 };
 
 const initiatePullToRefresh = () => {

@@ -4,10 +4,7 @@
     </div>
 </template>
 
-<script>
-export default {
-    name: "AppComponentBase",
-};
+<script lang="ts" setup>
 </script>
 
 <style scoped>

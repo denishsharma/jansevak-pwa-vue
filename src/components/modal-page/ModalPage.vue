@@ -50,6 +50,16 @@ const props = defineProps({
         required: false,
         default: null,
     },
+    doOnOpen: {
+        type: Function,
+        required: false,
+        default: () => {},
+    },
+    doOnClose: {
+        type: Function,
+        required: false,
+        default: () => {},
+    },
 });
 
 const isOpen = ref(false);
@@ -80,6 +90,7 @@ const closeModal = () => {
     isOpen.value = false;
     window.removeEventListener("popstate", popstateHandler);
     console.log("remove event listeners", props.id);
+    props.doOnClose();
     emit("on-close");
 };
 
@@ -89,6 +100,7 @@ const openModal = () => {
     router.push(router.currentRoute.value.fullPath.replace(`#modal-page-${props.id}`, "") + `#modal-page-${props.id}`);
     nextTick(() => {
         attachEventListeners();
+        props.doOnOpen();
     });
     emit("on-open");
 };

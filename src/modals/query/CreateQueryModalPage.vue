@@ -50,7 +50,17 @@
                                     Query Category
                                 </div>
                                 <label class="relative">
-                                    <input class="py-3 px-4 block w-full border-gray-200/[0.7] rounded-lg text-sm focus:z-10 focus:border-orange-500 focus:ring-orange-500" placeholder="e.g. P.K Road, Mulund West" type="text">
+                                    <button class="select-none text-left flex justify-between items-center py-3 px-4 block w-full border border-gray-200/[0.7] rounded-lg text-sm focus:z-10 focus:border-orange-500 focus:ring-1 focus:ring-orange-500" @click="openSelectQueryCategorySelectorSheet">
+                                        <div class="grow">
+                                            <div v-if="selectedQueryCategory === null" class="font-normal text-gray-300">
+                                                Select category
+                                            </div>
+                                            <div v-else class="font-medium">{{ selectedQueryCategory.name }}</div>
+                                        </div>
+                                        <div class="shrink-0 text-xxs font-medium bg-orange-100 text-orange-500 px-2 rounded-md -mr-1.5 uppercase">
+                                            Select
+                                        </div>
+                                    </button>
                                 </label>
                             </div>
                         </div>
@@ -152,6 +162,8 @@
                         </div>
                     </div>
                 </AppComponentBase>
+
+                <SelectQueryCategorySelectorSheet ref="refSelectQueryCategorySelectorSheet" @on-category-selected="onQueryCategorySelected" @on-close="onSelectQueryCategorySelectorSheetClose" />
             </template>
 
             <template #footer>
@@ -173,30 +185,51 @@ import PageHeading from "@/components/headings/PageHeading.vue";
 import AppContainerBase from "@/layouts/AppContainerBase.vue";
 import autosize from "autosize";
 import router from "@/router";
+import SelectQueryCategorySelectorSheet from "@/sheets/selector/select-query-category/SelectQueryCategorySelectorSheet.vue";
+import { executeAfter } from "@/helpers/general";
 
-const refModalPage = ref<InstanceType<typeof ModalPage>>(null);
+const refModalPage = ref<InstanceType<typeof ModalPage> | null>(null);
 const refDescriptionTextarea = ref<HTMLTextAreaElement | null>(null);
+
+const refSelectQueryCategorySelectorSheet = ref<InstanceType<typeof SelectQueryCategorySelectorSheet> | null>(null);
+
+const selectedQueryCategory = ref<{ name: string, id: string } | null>(null);
+
+const openSelectQueryCategorySelectorSheet = () => {
+    executeAfter(() => {
+        refSelectQueryCategorySelectorSheet.value?.openModal();
+        refModalPage.value?.suspend();
+    });
+};
+
+const onSelectQueryCategorySelectorSheetClose = () => {
+    refModalPage.value?.resume();
+};
+
+const onQueryCategorySelected = (queryCategory: { name: string, id: string }) => {
+    selectedQueryCategory.value = queryCategory;
+};
+
+const resetForm = () => {
+    selectedQueryCategory.value = null;
+    refDescriptionTextarea.value!.value = "";
+};
 
 const openModal = () => {
     refModalPage.value?.openModal();
     nextTick(() => {
+        resetForm();
         autosize(refDescriptionTextarea.value as HTMLTextAreaElement);
     });
     (document.activeElement as HTMLElement)?.blur();
 };
 
-const closeModal = () => {
-    refModalPage.value?.closeModal();
-};
-
-const goBack = () => {
-    refModalPage.value?.goBack();
-};
-
 defineExpose({
     openModal,
-    closeModal,
-    goBack,
+    closeModal: () => refModalPage.value?.closeModal(),
+    goBack: () => refModalPage.value?.goBack(),
+    suspend: () => refModalPage.value?.suspend(),
+    resume: () => refModalPage.value?.resume(),
 });
 </script>
 

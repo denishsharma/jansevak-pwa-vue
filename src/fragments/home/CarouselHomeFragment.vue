@@ -28,7 +28,6 @@ const onSlideEnd = (e: { currentSlideIndex: number, prevSlideIndex: number, slid
 </script>
 
 <style lang="scss" scoped>
-
 .carousel__track {
     transform-style: preserve-3d;
 }

@@ -1,5 +1,5 @@
 <template>
-    <BottomSheet id="create-new" ref="refBottomSheet" class="max-h-[66%]">
+    <BottomSheet id="upload-profile-image" ref="refBottomSheet" :do-on-close="doOnClose">
         <div class="overflow-y-auto h-full">
             <div class="mb-4 mt-3 flex flex-col">
                 <AppComponentBase class="mb-2">
@@ -12,15 +12,16 @@
                     </div>
                 </AppComponentBase>
 
-                <PageHeading class="mb-6" emphasis="Actions" title="Quick">
+                <PageHeading class="mb-6" emphasis="Upload" title="Photo">
                     <template #subtitle>
-                        You can create a new query or add family member from here.
+                        Upload a photo to your profile to make it more recognizable.
                     </template>
                 </PageHeading>
 
                 <AppComponentBase>
                     <div class="flex flex-col gap-2">
-                        <button class="py-2.5 px-2 w-full font-medium text-xs select-none inline-flex text-left items-center gap-2 rounded-lg border border-gray-200 hover:bg-gray-100 active:bg-gray-200 focus:outline-none transition-all" @click="emitCreateQuery">
+                        <input id="upload-image-dialog" accept="image/*" class="hidden" type="file" @change="onFileChange">
+                        <label class="py-2.5 px-2 w-full font-medium text-xs select-none inline-flex text-left items-center gap-2 rounded-lg border border-gray-200 hover:bg-gray-100 active:bg-gray-200 focus:outline-none transition-all" for="upload-image-dialog">
                             <div class="grow flex items-center gap-2">
                                 <svg class="w-5 h-5 text-amber-500" fill="none" height="22" viewBox="0 0 22 22" width="22" xmlns="http://www.w3.org/2000/svg">
                                     <path d="M5.50012 15.5836V4.58342C5.50012 3.06448 6.73123 1.83337 8.25017 1.83337H15.5836C17.1026 1.83337 18.3337 3.06448 18.3337 4.58342V15.5836C18.3337 17.1026 17.1026 18.3337 15.5836 18.3337H8.25017C6.73123 18.3337 5.50012 17.1026 5.50012 15.5836Z" fill="currentColor" opacity="0.35" />
@@ -28,16 +29,16 @@
                                     <path d="M11.8096 11.8921H11.8041C11.19 11.8921 10.716 11.3375 10.8215 10.7325C11.1423 8.8872 12.5787 8.82304 12.5787 7.67718C12.5787 7.35909 12.5237 6.64683 11.7574 6.64683C11.3431 6.64683 11.0992 6.91175 10.9571 7.19409C10.7655 7.57635 10.3237 7.76427 9.90294 7.69001C9.26493 7.57635 8.87351 6.8925 9.14393 6.30399C9.53077 5.46339 10.3228 4.58337 11.8912 4.58337C14.4359 4.58337 14.7769 6.57624 14.7769 7.51309C14.7769 9.7278 13.1278 9.8103 12.7859 11.0863C12.6622 11.5465 12.2863 11.8921 11.8096 11.8921ZM13.1315 14.2388C13.1315 14.6165 13.0151 14.9355 12.7813 15.1949C12.5467 15.4534 12.2396 15.5836 11.8619 15.5836C11.4824 15.5836 11.1762 15.4534 10.9425 15.1949C10.7087 14.9355 10.5905 14.6165 10.5905 14.2388C10.5905 13.8694 10.7087 13.5513 10.9425 13.2809C11.1762 13.0123 11.4824 12.8784 11.8619 12.8784C12.2396 12.8784 12.5467 13.0123 12.7813 13.2809C13.0151 13.5513 13.1315 13.8703 13.1315 14.2388Z" fill="currentColor" />
                                 </svg>
 
-                                Create new Query
+                                Upload new Image
                             </div>
                             <div class="shrink-0">
                                 <svg class="w-3.5 h-3.5 mr-1 text-gray-400 -rotate-90" fill="none" height="22" viewBox="0 0 22 22" width="22" xmlns="http://www.w3.org/2000/svg">
                                     <path d="M11.0001 12.2967L5.52877 6.82535C4.93596 6.23253 3.97371 6.23253 3.38089 6.82535C2.78808 7.41816 2.78808 8.38042 3.38089 8.97323L9.98778 15.5801C10.5477 16.14 11.4541 16.14 12.0125 15.5801L18.6194 8.97323C19.2122 8.38042 19.2122 7.41816 18.6194 6.82535C18.0266 6.23253 17.0643 6.23253 16.4715 6.82535L11.0001 12.2967Z" fill="currentColor" />
                                 </svg>
                             </div>
-                        </button>
+                        </label>
 
-                        <button class="py-2.5 px-2 w-full font-medium text-xs select-none inline-flex text-left items-center gap-2 rounded-lg border border-gray-200 hover:bg-gray-100 active:bg-gray-200 focus:outline-none transition-all" @click="emitAddFamilyMember">
+                        <button class="py-2.5 px-2 w-full font-medium text-xs select-none inline-flex text-left items-center gap-2 rounded-lg border border-gray-200 hover:bg-gray-100 active:bg-gray-200 focus:outline-none transition-all" @click="">
                             <div class="grow flex items-center gap-2">
                                 <svg class="w-5 h-5 text-blue-500" fill="none" height="22" viewBox="0 0 22 22" width="22" xmlns="http://www.w3.org/2000/svg">
                                     <path d="M14.6668 11.0001H7.33337V19.2503H14.6668V11.0001Z" fill="currentColor" opacity="0.35" />
@@ -47,7 +48,7 @@
                                     <path d="M19.012 8.4884C18.539 8.01539 18.385 7.33521 18.3355 6.88053C18.307 6.61378 18.5298 6.39103 18.7965 6.41944C19.2512 6.46803 19.9314 6.62295 20.4044 7.09596C20.8774 7.56896 21.0314 8.24914 21.0809 8.70382C21.1093 8.97057 20.8866 9.19333 20.6198 9.16491C20.1661 9.11541 19.485 8.96049 19.012 8.4884Z" fill="currentColor" opacity="0.35" />
                                 </svg>
 
-                                Add new Family Member
+                                Remove Profile Picture
                             </div>
                             <div class="shrink-0">
                                 <svg class="w-3.5 h-3.5 mr-1 text-gray-400 -rotate-90" fill="none" height="22" viewBox="0 0 22 22" width="22" xmlns="http://www.w3.org/2000/svg">
@@ -63,48 +64,39 @@
 </template>
 
 <script lang="ts" setup>
-import { ref } from "vue";
 import BottomSheet from "@/components/bottom-sheet/BottomSheet.vue";
-import PageHeading from "@/components/headings/PageHeading.vue";
 import AppComponentBase from "@/layouts/AppComponentBase.vue";
+import PageHeading from "@/components/headings/PageHeading.vue";
 import router from "@/router";
-import { executeAfter } from "@/helpers/general";
+import { ref, shallowRef } from "vue";
 
 const refBottomSheet = ref<InstanceType<typeof BottomSheet>>();
 
-const openModal = () => {
-    refBottomSheet.value?.openModal();
+const file = shallowRef<File | null>(null);
+
+const onFileChange = (e: Event) => {
+    const target = e.target as HTMLInputElement;
+    const files = target.files;
+    file.value = (files && files.length > 0) ? files[0] : null;
+    const result = URL.createObjectURL(file.value);
+    emit("on-image-selected", {
+        ["uri" as string]: result,
+        ["file" as string]: file.value,
+    });
+    router.back();
 };
 
-const closeModal = () => {
-    refBottomSheet.value?.closeModal();
-};
+const doOnClose = () => {};
 
-const goBack = () => {
-    refBottomSheet.value?.goBack();
-};
+const emit = defineEmits(["on-image-selected"]);
 
 defineExpose({
-    openModal,
-    closeModal,
-    goBack,
+    openModal: () => refBottomSheet.value?.openModal(),
+    closeModal: () => refBottomSheet.value?.closeModal(),
+    goBack: () => refBottomSheet.value?.goBack(),
     suspend: () => refBottomSheet.value?.suspend(),
     resume: () => refBottomSheet.value?.resume(),
 });
-
-const emit = defineEmits(["on-add-family-member", "on-create-query"]);
-
-const emitAddFamilyMember = () => {
-    router.back();
-    emit("on-add-family-member");
-};
-
-const emitCreateQuery = () => {
-    goBack();
-    executeAfter(() => {
-        emit("on-create-query");
-    }, 25);
-};
 </script>
 
 <style scoped>
