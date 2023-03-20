@@ -1,6 +1,5 @@
 <template>
-    <div class="bg-red-100">
-        eqwe
+    <div class="bg-gray-50 aspect-video border rounded-xl">
     </div>
 </template>
 

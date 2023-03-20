@@ -53,7 +53,6 @@ export const useAuthStore = defineStore("auth", () => {
         set(user, { ...user.value, permissions: value });
     };
 
-
     const logout = () => {
         set(isAuthenticated, false);
         set(isProfileCompleted, false);

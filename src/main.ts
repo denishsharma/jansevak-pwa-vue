@@ -2,6 +2,8 @@ import { createApp } from "vue";
 import { createPinia } from "pinia";
 import piniaPluginPersistedState from "pinia-plugin-persistedstate";
 
+import { App as CapacitorApp } from "@capacitor/app";
+
 import "@/assets/css/style.scss";
 
 import App from "./App.vue";
@@ -26,6 +28,14 @@ app.config.errorHandler = (err, vm, info) => {
 
 app.config.globalProperties.emitter = emitter;
 app.mount("#app");
+
+CapacitorApp.addListener("backButton", async (canGoBack) => {
+    if (canGoBack) {
+        router.back();
+    } else {
+        await CapacitorApp.exitApp();
+    }
+});
 
 const resize = () => {
     const vh = window.innerHeight * 0.01;

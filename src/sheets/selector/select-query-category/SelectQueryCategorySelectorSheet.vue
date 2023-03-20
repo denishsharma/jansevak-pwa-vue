@@ -1,5 +1,5 @@
 <template>
-    <BottomSheet id="select-query-category" ref="refBottomSheet">
+    <BottomSheet id="select-query-category" ref="refBottomSheet" :do-on-close="doOnClose" :do-on-open="doOnOpen">
         <div class="pb-4 pt-3 flex flex-col h-full overflow-y-auto">
             <AppComponentBase class="mb-2 shrink-0">
                 <div class="w-full flex h-10 items-center justify-between gap-4">
@@ -18,11 +18,14 @@
             </PageHeading>
 
             <AppComponentBase class="overflow-y-auto">
-                <div class="flex flex-wrap gap-1.5 py-2 overflow-y-auto" data-ref="parent">
-                    <div v-for="(result, index) in searchCategoryResults" :key="result.item.id" ref="refCategoryItems" :class="selectedCategory?.id === result.item.id ? 'border-orange-500 text-orange-500 bg-orange-100' : 'border-gray-200 hover:bg-gray-100 active:bg-gray-200'" :data-index="index" :data-selected="selectedCategory?.id === result.item.id" class="py-2.5 px-3 w-fit font-medium text-xs select-none inline-flex text-left items-center gap-2 rounded-lg border focus:outline-none transition-all" data-visible="" @click="setSelectedCategory(result.item.id)">
-                        {{ result.item.name }}
+                <transition mode="out-in" name="fade">
+                    <SelectorItemsSkeleton v-if="isFetching" :full-width="true" />
+                    <div v-else class="flex flex-wrap gap-1.5 py-2 overflow-y-auto" data-ref="parent">
+                        <div v-for="(result, index) in searchCategoryResults" :key="result.item.id" ref="refCategoryItems" :class="selectedCategory?.id === result.item.id ? 'border-orange-500 text-orange-500 bg-orange-100' : 'border-gray-200 hover:bg-gray-100 active:bg-gray-200'" :data-index="index" :data-selected="selectedCategory?.id === result.item.id" class="py-2.5 px-3 w-full font-medium text-xs select-none inline-flex text-left items-center gap-2 rounded-lg border focus:outline-none transition-all" data-visible="" @click="setSelectedCategory(result.item.id)">
+                            {{ result.item.name }}
+                        </div>
                     </div>
-                </div>
+                </transition>
             </AppComponentBase>
 
             <AppComponentBase class="mt-4 shrink-0">
@@ -55,29 +58,23 @@ import { computed, nextTick, onUnmounted, onUpdated, ref, watch } from "vue";
 import router from "@/router";
 import type { UseFuseOptions } from "@vueuse/integrations/useFuse";
 import { useFuse } from "@vueuse/integrations/useFuse";
-import { get, set } from "@vueuse/core";
+import { get, set, syncRef } from "@vueuse/core";
 import { useElementVisibility } from "@vueuse/core";
+import { executeAfter } from "@/helpers/general";
+import QueryService from "@/services/query.service";
+import SelectorItemsSkeleton from "@/skeleton/SelectorItemsSkeleton.vue";
 
 interface QueryCategoryItem {
     name: string;
     id: string;
 }
 
-const queryCategories = ref<QueryCategoryItem[]>([
-    { name: "Environmental Concerns", id: "1" },
-    { name: "Community Facilities", id: "2" },
-    { name: "Public Services", id: "3" },
-    { name: "Civil Rights", id: "4" },
-    { name: "Government Services", id: "5" },
-    { name: "Transportation", id: "6" },
-    { name: "Education", id: "7" },
-    { name: "Housing", id: "8" },
-    { name: "Cultural", id: "9" },
-    { name: "Other", id: "10" },
-]);
+const queryCategories = ref<QueryCategoryItem[]>([]);
 
 const refBottomSheet = ref<InstanceType<typeof BottomSheet>>();
 const refCategoryItems = ref<HTMLDivElement[]>([]);
+
+const isFetching = ref(true);
 
 const selectedCategory = ref<QueryCategoryItem | null>(null);
 
@@ -116,23 +113,43 @@ const clearSearch = () => {
     set(searchCategoryTerm, "");
 };
 
-const onOpenSelf = () => {
-    refBottomSheet.value?.openModal();
-    nextTick(() => {
-        clearSearch();
+const handleQueryCategoryListOnSuccess = (data: any) => {
+    queryCategories.value = data.map((c: any) => ({ name: c.name, id: c.uuid }));
+};
 
-        const _selectedCategoryElement = refCategoryItems.value.find((el) => el.dataset.selected === "true");
-        if (_selectedCategoryElement) {
-            _selectedCategoryElement.scrollIntoView({ behavior: "smooth", block: "center" });
-        }
+const fetchQueryCategories = async () => {
+    executeAfter(() => {
+        const { isLoading, execute } = QueryService.listCategories(handleQueryCategoryListOnSuccess);
+        syncRef(isLoading, isFetching);
+        execute();
     });
+};
+
+const doOnOpen = () => {
+    clearSearch();
+    fetchQueryCategories();
+
+    const _selectedCategoryElement = refCategoryItems.value.find((el) => el.dataset.selected === "true");
+    if (_selectedCategoryElement) {
+        _selectedCategoryElement.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
+
     (document.activeElement as HTMLElement)?.blur();
 };
+
+const doOnClose = () => {
+    executeAfter(() => {
+        clearSearch();
+        set(isFetching, true);
+        set(queryCategories, []);
+    }, 100);
+};
+
 
 const emit = defineEmits(["on-category-selected"]);
 
 defineExpose({
-    openModal: onOpenSelf,
+    openModal: () => refBottomSheet.value?.openModal(),
     closeModal: () => refBottomSheet.value?.closeModal(),
     goBack: () => refBottomSheet.value?.goBack(),
     suspend: () => refBottomSheet.value?.suspend(),

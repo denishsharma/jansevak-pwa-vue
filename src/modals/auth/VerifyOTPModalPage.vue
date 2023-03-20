@@ -40,7 +40,7 @@
                             {{ isVerifying ? "Verifying..." : "Verify OTP" }}
                         </button>
 
-                        <button class="py-3 px-4 w-full text-xs select-none inline-flex justify-center items-center rounded-lg border border-transparent text-gray-500 hover:bg-gray-200 active:bg-gray-300 focus:outline-none transition-all" type="button">
+                        <button class="py-3 px-4 w-full text-xs select-none inline-flex justify-center items-center rounded-lg border border-transparent text-gray-500 active:bg-gray-300 focus:outline-none transition-all" type="button">
                             Resend code in &nbsp;<span class="inline font-semibold text-gray-500">00:30</span>
                         </button>
                     </div>

@@ -72,16 +72,16 @@ import { ref, shallowRef } from "vue";
 
 const refBottomSheet = ref<InstanceType<typeof BottomSheet>>();
 
-const file = shallowRef<File | null>(null);
-
 const onFileChange = (e: Event) => {
     const target = e.target as HTMLInputElement;
     const files = target.files;
-    file.value = (files && files.length > 0) ? files[0] : null;
-    const result = URL.createObjectURL(file.value);
+    const file = files?.item(0);
+    if (!file) return;
+
+    const result = URL.createObjectURL(file);
     emit("on-image-selected", {
         ["uri" as string]: result,
-        ["file" as string]: file.value,
+        ["file" as string]: file,
     });
     router.back();
 };

@@ -33,7 +33,7 @@
                             <Disclosure v-for="(faq, index) in faqs" :key="index" v-slot="{ open }" :default-open="index === 0" as="div">
                                 <DisclosureButton :class="open ? 'rounded-tl-lg rounded-tr-lg bg-gray-100 border-gray-100' : 'bg-white rounded-lg border-gray-200 text-gray-600'" class="flex w-full justify-between px-4 py-2.5 border text-left text-sm font-medium hover:bg-gray-100 active:bg-gray-200 focus:outline-none transition">
                                     <div>{{ faq.question }}</div>
-                                    <svg :class="open ? 'rotate-180' : 'rotate-0'" class="transition w-3.5" fill="none" height="22" viewBox="0 0 22 22" width="22" xmlns="http://www.w3.org/2000/svg">
+                                    <svg :class="open ? 'rotate-180' : 'rotate-0'" class="transition w-3.5 shrink-0" fill="none" height="22" viewBox="0 0 22 22" width="22" xmlns="http://www.w3.org/2000/svg">
                                         <path d="M11.0001 12.2967L5.52877 6.82535C4.93596 6.23253 3.97371 6.23253 3.38089 6.82535C2.78808 7.41816 2.78808 8.38042 3.38089 8.97323L9.98778 15.5801C10.5477 16.14 11.4541 16.14 12.0125 15.5801L18.6194 8.97323C19.2122 8.38042 19.2122 7.41816 18.6194 6.82535C18.0266 6.23253 17.0643 6.23253 16.4715 6.82535L11.0001 12.2967Z" fill="currentColor" />
                                     </svg>
                                 </DisclosureButton>

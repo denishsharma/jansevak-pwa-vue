@@ -48,7 +48,7 @@
                 <AppComponentBase>
                     <div class="flex flex-col gap-2">
                         <label class="relative">
-                            <input v-maska :value="authData.phone" class="py-3 px-4 pl-12 block w-full border-gray-200/[0.7] rounded-lg text-sm focus:z-10 focus:border-orange-500 focus:ring-orange-500" data-maska="##########" placeholder="Enter your phone number" type="text" @input="updatePhoneNumber">
+                            <input v-maska :disabled="isLoggingIn" :value="authData.phone" class="py-3 px-4 pl-12 block w-full border-gray-200/[0.7] rounded-lg text-sm focus:z-10 focus:border-orange-500 focus:ring-orange-500 disabled:bg-gray-50" data-maska="##########" placeholder="Enter your phone number" type="text" @input="updatePhoneNumber">
                             <div class="absolute inset-y-0 left-0 flex items-center pointer-events-none z-20 pl-3.5">
                                 <svg fill="none" height="22" viewBox="0 0 22 22" width="22" xmlns="http://www.w3.org/2000/svg">
                                     <path d="M7.56262 18.7347H2.83598C1.64942 18.7347 0.6875 17.7727 0.6875 16.5862V5.4141C0.6875 4.22754 1.64942 3.26562 2.83598 3.26562H7.56262V18.7347Z" fill="#FF9E1C" />
@@ -61,7 +61,7 @@
                         </label>
 
                         <label v-if="authMode === 'password'" class="relative">
-                            <input class="py-3 px-4 pl-12 block w-full border-gray-200/[0.7] rounded-lg text-sm focus:z-10 focus:border-orange-500 focus:ring-orange-500" placeholder="Enter your password" type="password">
+                            <input :disabled="isLoggingIn" class="py-3 px-4 pl-12 block w-full border-gray-200/[0.7] rounded-lg text-sm focus:z-10 focus:border-orange-500 focus:ring-orange-500 disabled:bg-gray-50" placeholder="Enter your password" type="password">
                             <div class="absolute inset-y-0 left-0 flex items-center pointer-events-none z-20 pl-3.5 text-gray-600">
                                 <svg fill="none" height="22" viewBox="0 0 22 22" width="22" xmlns="http://www.w3.org/2000/svg">
                                     <path d="M16.5003 19.2503H5.50005C3.98111 19.2503 2.75 18.0192 2.75 16.5003V9.1668C2.75 7.64785 3.98111 6.41675 5.50005 6.41675H16.5003C18.0192 6.41675 19.2503 7.64785 19.2503 9.1668V16.5003C19.2503 18.0192 18.0192 19.2503 16.5003 19.2503Z" fill="currentColor" opacity="0.35" />
@@ -75,12 +75,12 @@
 
                 <AppComponentBase class="mt-3.5">
                     <div class="flex flex-col gap-2">
-                        <button :class="clsx({'bg-orange-500 text-white hover:bg-orange-600 active:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2': !isLoggingIn, 'bg-gray-100 text-gray-300': isLoggingIn})" :disabled="isLoggingIn" class="py-3.5 px-4 w-full font-medium text-xs select-none inline-flex justify-center items-center gap-2 rounded-lg border border-transparent transition-all" type="button" @click="handleLogin">
+                        <button :class="clsx({'bg-orange-500 text-white active:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2': !isLoggingIn, 'bg-gray-100 text-gray-300': isLoggingIn})" :disabled="isLoggingIn" class="py-3.5 px-4 w-full font-medium text-xs select-none inline-flex justify-center items-center gap-2 rounded-lg border border-transparent transition-all" type="button" @click="handleLogin">
                             <div v-show="isLoggingIn" aria-label="loading" class="animate-spin inline-block w-4 h-4 border-[3px] border-current border-t-transparent text-gray-300 rounded-full" role="status"></div>
                             {{ isLoggingIn ? "Logging In..." : "Login" }}
                         </button>
 
-                        <button v-if="authMode === 'password'" class="py-2 px-4 w-full text-xs select-none inline-flex justify-center items-center rounded-lg border border-transparent text-gray-500 hover:bg-gray-200 active:bg-gray-300 focus:outline-none transition-all" type="button" @click="openForgotPasswordSheet">
+                        <button v-if="authMode === 'password'" class="py-2 px-4 w-full text-xs select-none inline-flex justify-center items-center rounded-lg border border-transparent text-gray-500 active:bg-gray-300 focus:outline-none transition-all" type="button" @click="openForgotPasswordSheet">
                             Forgot Password?&nbsp;<span class="inline font-semibold text-gray-500">Reset Password</span>
                         </button>
                     </div>
@@ -96,7 +96,7 @@
 
                 <AppComponentBase>
                     <transition mode="out-in" name="fade">
-                        <button class="py-3.5 px-4 w-full text-xs font-medium select-none inline-flex justify-center items-center gap-2 rounded-lg border border-transparent bg-gray-500 text-white hover:bg-gray-600 active:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition-all" type="button" @click="changeLoginMode">
+                        <button class="py-3.5 px-4 w-full text-xs font-medium select-none inline-flex justify-center items-center gap-2 rounded-lg border border-transparent bg-gray-500 text-white active:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition-all" type="button" @click="changeLoginMode">
                             Log in using {{ authMode === "password" ? "OTP" : "Password" }}
                         </button>
                     </transition>

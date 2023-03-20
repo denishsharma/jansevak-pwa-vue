@@ -1,5 +1,5 @@
 <template>
-    <ModalPage id="announcement-details" ref="refModalPage">
+    <ModalPage id="announcement-details" ref="refModalPage" :do-on-close="doOnClose">
         <AppContainerBase>
             <template #title>Announcement Detail</template>
 
@@ -15,24 +15,23 @@
 
             <template #body>
                 <AppComponentBase class="mb-4">
-                    <div class="select-none flex flex-col gap-1">
-                        <div class="aspect-video rounded-xl bg-gray-100 mb-3"></div>
-                        <div class="text-lg pr-8 leading-tight font-semibold">
-                            Multi-line truncation with new @tailwindcss line-clamp
-                        </div>
-                        <div class="text-xs pr-3 text-gray-400 italic leading-tight line-clamp-3">
-                            Imagine you’re implementing a beautiful design you or someone on your team carefully
-                            crafted
-                            in Figma. You’ve nailed all the different layouts at each breakpoint, perfected the
-                            whitespace and typography, and the photography you’re using is really bringing the
-                            design to
-                            life.
-                        </div>
-                    </div>
-                </AppComponentBase>
+                    <transition mode="out-in" name="fade">
+                        <AnnouncementDetailsSkeleton v-if="isFetching" />
 
-                <AppComponentBase>
-                    <div class="h-[600px] bg-amber-100"></div>
+                        <div v-else class="select-none flex flex-col gap-1">
+                            <div v-if="announcementDetails.cover_url" class="aspect-video bg-gray-100 rounded-xl mb-3 overflow-hidden">
+                                <img :src="announcementDetails.cover_url" alt="" class="object-cover object-center w-full h-full pointer-events-none" draggable="false" />
+                            </div>
+                            <div class="text-lg pr-8 leading-tight font-semibold">
+                                {{ announcementDetails.subject }}
+                            </div>
+                            <div class="text-xs pr-3 text-gray-400 italic leading-tight line-clamp-3">
+                                {{ announcementDetails.content }}
+                            </div>
+
+                            <div class="mt-5" v-html="announcementDetails.rendered_content"></div>
+                        </div>
+                    </transition>
                 </AppComponentBase>
             </template>
         </AppContainerBase>
@@ -43,39 +42,82 @@
 import ModalPage from "@/components/modal-page/ModalPage.vue";
 import router from "@/router";
 import { nextTick, ref } from "vue";
-import { set } from "@vueuse/core";
+import { set, syncRef, useDateFormat, resolveUnref } from "@vueuse/core";
 import AppComponentBase from "@/layouts/AppComponentBase.vue";
 import AppContainerBase from "@/layouts/AppContainerBase.vue";
+import { executeAfter, resolveFileUrl } from "@/helpers/general";
+import AnnouncementService from "@/services/announcement.service";
+import { TEMP_HOST } from "@/helpers/api";
+import AnnouncementDetailsSkeleton from "@/skeleton/AnnouncementDetailsSkeleton.vue";
+import MarkdownIt from "markdown-it";
+
+interface AnnouncementDetails {
+    slug: string;
+    subject: string;
+    content: string;
+    published_at: string;
+    published_at_formatted: string;
+    cover_url: string;
+    rendered_content: string;
+}
 
 const refModalPage = ref<InstanceType<typeof ModalPage> | null>(null);
 
-const announcementId = ref<string | null>(null);
+const announcementId = ref<string>("");
+const announcementDetails = ref<AnnouncementDetails>({} as AnnouncementDetails);
+const isFetching = ref(true);
+
+const handleAnnouncementDetailsOnSuccess = (data: any) => {
+    announcementDetails.value = {
+        slug: data.slug,
+        subject: data.subject,
+        content: data.content,
+        published_at: data.published_at,
+        published_at_formatted: resolveUnref(useDateFormat(data.published_at, "DD MMM, YYYY - h:mm A")),
+        cover_url: resolveFileUrl(data.cover_url) || "",
+        rendered_content: new MarkdownIt({
+            html: true,
+            xhtmlOut: true,
+        }).render(data.content),
+    };
+};
+
+const fetchAnnouncementDetails = async () => {
+    executeAfter(() => {
+        const {
+            isLoading,
+            execute,
+        } = AnnouncementService.show({ id: announcementId.value }, handleAnnouncementDetailsOnSuccess);
+        syncRef(isLoading, isFetching);
+        execute();
+    }, 100);
+};
 
 const openModal = (id: string) => {
     refModalPage.value?.openModal();
     nextTick(() => {
         set(announcementId, id);
+        fetchAnnouncementDetails();
     });
     (document.activeElement as HTMLElement)?.blur();
 };
 
-const closeModal = () => {
-    refModalPage.value?.closeModal();
-};
-
-const goBack = () => {
-    refModalPage.value?.goBack();
+const doOnClose = () => {
+    executeAfter(() => {
+        set(isFetching, true);
+        set(announcementId, "");
+        set(announcementDetails, {} as AnnouncementDetails);
+    }, 100);
 };
 
 defineExpose({
     openModal,
-    closeModal,
-    goBack,
+    closeModal: () => refModalPage.value?.closeModal(),
+    goBack: () => refModalPage.value?.goBack(),
     suspend: () => refModalPage.value?.suspend(),
     resume: () => refModalPage.value?.resume(),
 });
 </script>
 
-<style scoped>
-
+<style lang="scss" scoped>
 </style>

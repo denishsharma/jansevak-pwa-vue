@@ -74,14 +74,24 @@
             </div>
         </AppComponentBase>
 
-        <AppComponentBase>
+        <AppComponentBase v-if="false">
             <div class="flex flex-col gap-1">
-                <div class="bg-amber-200 flex items-center h-6 text-sm">
-                    <div class="bg-red-300 leading-tight font-semibold">
+                <div class="flex items-center h-6 text-xs">
+                    <div class="leading-tight font-semibold">
                         My Nagarik ID
                     </div>
                 </div>
                 <NagarikCard />
+            </div>
+        </AppComponentBase>
+
+        <AppComponentBase>
+            <div class="flex flex-col gap-1">
+                <div class="flex items-center h-6 text-xs">
+                    <div class="leading-tight font-bold uppercase">
+                        Queries &amp; Answers
+                    </div>
+                </div>
             </div>
         </AppComponentBase>
 

@@ -18,11 +18,14 @@
             </PageHeading>
 
             <AppComponentBase class="overflow-y-auto">
-                <div class="flex flex-wrap gap-1.5 py-2 overflow-y-auto" data-ref="parent">
-                    <div v-for="(result, index) in searchWardResults" :key="result.item.code" ref="refWardItems" :class="selectedWard?.code === result.item.code ? 'border-orange-500 text-orange-500 bg-orange-100' : 'border-gray-200 hover:bg-gray-100 active:bg-gray-200'" :data-index="index" :data-selected="selectedWard?.code === result.item.code" class="py-2.5 px-3 w-fit font-medium text-xs select-none inline-flex text-left items-center gap-2 rounded-lg border focus:outline-none transition-all" data-visible="" @click="setSelectedWard(result.item.code)">
-                        {{ result.item.name }}
+                <transition mode="out-in" name="fade">
+                    <SelectorItemsSkeleton v-if="isFetching" />
+                    <div v-else class="flex flex-wrap gap-1.5 py-2 overflow-y-auto" data-ref="parent">
+                        <div v-for="(result, index) in searchWardResults" :key="result.item.code" :ref="unwrapWardItems.refWardItems" :class="selectedWard?.code === result.item.code ? 'border-orange-500 text-orange-500 bg-orange-100' : 'border-gray-200 hover:bg-gray-100 active:bg-gray-200'" :data-index="index" :data-selected="selectedWard?.code === result.item.code" class="py-2.5 px-3 w-fit font-medium text-xs select-none inline-flex text-left items-center gap-2 rounded-lg border focus:outline-none transition-all" data-ref="item" data-visible="" @click="setSelectedWard(result.item.code)">
+                            {{ result.item.name }}
+                        </div>
                     </div>
-                </div>
+                </transition>
             </AppComponentBase>
 
             <AppComponentBase class="mt-4 shrink-0">
@@ -51,13 +54,14 @@
 import BottomSheet from "@/components/bottom-sheet/BottomSheet.vue";
 import AppComponentBase from "@/layouts/AppComponentBase.vue";
 import PageHeading from "@/components/headings/PageHeading.vue";
-import { computed, ref } from "vue";
+import { computed, nextTick, ref } from "vue";
 import type { UseFuseOptions } from "@vueuse/integrations/useFuse";
 import { useFuse } from "@vueuse/integrations/useFuse";
 import { executeAfter } from "@/helpers/general";
 import router from "@/router";
 import WardService from "@/services/ward.service";
-import { set, syncRef } from "@vueuse/core";
+import { resolveUnref, set, syncRef } from "@vueuse/core";
+import SelectorItemsSkeleton from "@/skeleton/SelectorItemsSkeleton.vue";
 
 interface WardItem {
     name: string;
@@ -66,10 +70,11 @@ interface WardItem {
 
 const refBottomSheet = ref<InstanceType<typeof BottomSheet>>();
 const refWardItems = ref<HTMLDivElement[]>([]);
+const unwrapWardItems = { refWardItems };
 const wards = ref<WardItem[]>([]);
 const selectedWard = ref<WardItem | null>(null);
 
-const isFetching = ref(false);
+const isFetching = ref(true);
 
 const searchTerm = ref("");
 const setSearchTerm = (e: Event) => {
@@ -103,15 +108,20 @@ const fuseOptions = computed<UseFuseOptions<WardItem>>(() => ({
 }));
 const { results: searchWardResults } = useFuse(searchTerm, wards, fuseOptions);
 
-const handleWardListOnSuccess = (data: any) => {
+const handleWardListOnSuccess = async (data: any) => {
     wards.value = data;
 
-    executeAfter(() => {
-        const _selectedWardElement = refWardItems.value.find((el) => el.dataset.selected === "true");
-        if (_selectedWardElement) {
-            _selectedWardElement.scrollIntoView({ behavior: "smooth", block: "center" });
+
+    await nextTick(() => {
+        if (!isFetching.value) {
+            console.log(refWardItems.value.length);
+            const _selectedWardElement = refWardItems.value.find((el) => el.dataset.selected === "true");
+            if (_selectedWardElement) {
+                _selectedWardElement.scrollIntoView({ behavior: "smooth", block: "center" });
+            }
         }
-    }, 10);
+
+    });
 };
 
 const fetchWards = () => {
@@ -125,13 +135,14 @@ const fetchWards = () => {
 const doOnOpen = () => {
     clearSearch();
     fetchWards();
+
     (document.activeElement as HTMLElement)?.blur();
 };
 
 const doOnClose = () => {
     executeAfter(() => {
         clearSearch();
-        set(isFetching, false);
+        set(isFetching, true);
         set(wards, []);
     }, 100);
 };

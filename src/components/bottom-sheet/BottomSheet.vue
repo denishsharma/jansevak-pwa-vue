@@ -46,8 +46,9 @@
 import { TransitionRoot, TransitionChild, Dialog, DialogPanel } from "@headlessui/vue";
 import { nextTick, ref } from "vue";
 import router from "@/router";
-import { useEventBus } from "@vueuse/core";
+import { useDebounceFn, useEventBus } from "@vueuse/core";
 import { globalEventKey } from "@/helpers/globalEvent";
+import { executeAfter } from "@/helpers/general";
 
 const props = defineProps({
     id: {
@@ -103,7 +104,9 @@ const goBack = () => {
 
 const closeModalOnBackdropClick = () => {
     if (props.closeOnBackdropClick) {
-        router.back();
+        executeAfter(() => {
+            router.back();
+        });
     }
 };
 

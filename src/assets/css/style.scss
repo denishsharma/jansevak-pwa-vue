@@ -22,7 +22,7 @@
 }
 
 body {
-    @apply m-0 p-0 overflow-hidden w-screen h-screen;
+    @apply m-0 p-0 overflow-hidden w-screen h-screen select-none;
     height: calc(var(--vh, 1vh) * 100);
 }
 
@@ -49,7 +49,7 @@ input, textarea {
     transition: opacity 100ms
 }
 
-.fade-enter,
+.fade-enter-from,
 .fade-leave-to {
     opacity: 0
 }

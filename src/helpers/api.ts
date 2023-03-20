@@ -1,9 +1,13 @@
-import axios from "axios";
 import type { AxiosError, AxiosResponse } from "axios";
+import axios from "axios";
 import { useAuthStore } from "@/stores/authStore";
 import { storeToRefs } from "pinia";
 
-const API_URL = `${import.meta.env.VITE_API_URL}/api/`;
+export const TEMP_HOST = "https://rotten-points-shop-49-36-102-36.loca.lt";
+// export const TEMP_HOST = "http://localhost:3333";
+
+// const API_URL = `${import.meta.env.VITE_API_URL}/api/`;
+const API_URL = `${TEMP_HOST}/api/`;
 
 axios.defaults.baseURL = API_URL;
 axios.defaults.headers.common["Access-Control-Allow-Origin"] = "*";
@@ -32,10 +36,7 @@ export const call = (url: string, method: "get" | "post" | "put" | "delete", dat
         url,
         method,
         data,
-        headers: {
-            ...options.headers,
-            Authorization: _authToken,
-        },
+        headers: Object.assign({ "Authorization": _authToken }, options.headers),
         ...options,
     });
 
