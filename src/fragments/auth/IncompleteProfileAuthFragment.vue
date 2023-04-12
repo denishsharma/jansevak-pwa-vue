@@ -14,11 +14,11 @@
             </div>
 
             <div class="flex flex-col gap-2 w-full">
-                <button :disabled="isCheckingProfile" class="disabled:bg-gray-100 disabled:text-gray-300 py-3.5 mt-3 px-4 w-full font-medium text-xs select-none inline-flex justify-center items-center gap-2 rounded-lg border border-transparent bg-orange-500 text-white active:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 transition-all" type="button" @click="$emit('on-complete-profile')">
+                <button :disabled="isCheckingProfile" class="disabled:bg-gray-100 disabled:text-gray-300 py-3.5 mt-3 px-4 w-full font-medium text-xs select-none inline-flex justify-center items-center gap-2 rounded-lg border border-transparent bg-orange-500 text-white active:bg-orange-600 focus:outline-none transition-all" type="button" @click="$emit('on-complete-profile')">
                     Complete Profile
                 </button>
 
-                <button :disabled="isCheckingProfile" class="disabled:bg-gray-100 disabled:text-gray-300 py-3 px-4 w-full text-xs select-none inline-flex justify-center items-center rounded-lg border border-transparent text-red-500 active:bg-gray-200 focus:outline-none transition-all" type="button" @click="$emit('on-logout')">
+                <button :disabled="isCheckingProfile" class="disabled:bg-gray-100 disabled:text-gray-300 py-3 px-4 w-full text-xs select-none inline-flex justify-center items-center rounded-lg border border-transparent text-red-500 active:bg-gray-100 focus:outline-none transition-all" type="button" @click="$emit('on-logout')">
                     Logout
                 </button>
             </div>

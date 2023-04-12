@@ -24,13 +24,22 @@
 
                 <AppComponentBase>
                     <div class="flex flex-col gap-5">
+                        <div v-if="['JANSEVAK', 'ADMIN'].includes(user['data'].user_type)" class="bg-gray-100 rounded-lg p-1 overflow-hidden grid grid-cols-2 gap-1">
+                            <button :class="forSelfAndFamily ? 'shadow-black/[0.05] bg-white font-medium' : 'shadow-transparent text-gray-400'" class="disabled:bg-gray-50 disabled:text-gray-300 shadow-[0_0_30px_0] py-2.5 shrink-0 flex items-center z-[1] p-1 px-1 w-full text-xs select-none inline-flex justify-center items-center rounded-md border border-transparent transition-all" @click="forSelfAndFamily = true">
+                                Self & Family
+                            </button>
+                            <button :class="!forSelfAndFamily ? 'shadow-black/[0.05] bg-white font-medium' : 'shadow-transparent text-gray-400'" class="disabled:bg-gray-50 disabled:text-gray-300 shadow-[0_0_30px_0]  py-2.5 shrink-0 flex items-center z-[1] p-1 px-1 w-full text-xs select-none inline-flex justify-center items-center rounded-md border border-transparent transition-all" @click="forSelfAndFamily = false">
+                                Other Nagarik
+                            </button>
+                        </div>
+
                         <div class="grid grid-cols-1 gap-x-3">
                             <div class="flex flex-col">
                                 <div class="block text-xs text-gray-400 font-medium mb-1.5 after:content-['*'] after:ml-px after:text-red-400">
                                     On Behalf Of
                                 </div>
                                 <div class="relative">
-                                    <button :disabled="isProcessing" class="group transition-all select-none text-left flex justify-between items-center py-3 px-4 block w-full border border-gray-200/[0.7] rounded-lg text-sm focus:z-10 focus:border-orange-500 focus:ring-1 focus:ring-orange-500 disabled:bg-gray-50" @click="openSelectOnBehalfOfSelectorSheet">
+                                    <button :disabled="isProcessing" class="group transition-all select-none text-left flex justify-between items-center py-3 px-4 block w-full border border-gray-200/[0.7] rounded-lg text-sm focus:z-10 focus:border-orange-500 focus:ring-1 focus:ring-orange-500 disabled:bg-gray-50" @click="openOnBehalfOfUserSheet">
                                         <div class="grow">
                                             <transition mode="out-in" name="fade">
                                                 <div v-if="formData.on_behalf_of === null" class="font-normal text-gray-300">
@@ -55,8 +64,14 @@
                                     </button>
                                 </div>
                                 <div class="block text-xxs leading-tight text-gray-300 font-medium mt-1.5">
-                                    Select the user you want to create the query for. If you are creating the query for
-                                    yourself, select yourself.
+                                    <div v-if="forSelfAndFamily" class="inline">
+                                        Select the user you want to create the query for. If you are creating the query
+                                        for yourself, select yourself.
+                                    </div>
+                                    <div v-else class="inline">
+                                        Search and select the user from the users allocated to you as a Jansevak. Choose
+                                        self & family for other users.
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -204,8 +219,11 @@
                                             </svg>
                                         </div>
                                         <div class="text-xs font-medium grow overflow-hidden whitespace-nowrap pr-2 text-ellipsis">
-                                            {{ item.file.name }}
+                                            <div class="inline" v-text="item.file.name"></div>
                                         </div>
+                                    </div>
+                                    <div v-if="!item.sizeValidation" class="inline text-red-400 leading-tight mt-0.5 text-right items-center text-xxs font-semibold grow whitespace-nowrap">
+                                        2MB
                                     </div>
                                     <button :disabled="isProcessing" class="disabled:bg-gray-50 disabled:text-gray-300 shrink-0 -mr-1 h-fit flex items-center z-[1] p-1 px-1 w-fit text-xs select-none inline-flex justify-center items-center rounded-md border border-transparent text-gray-500 active:bg-gray-200 focus:outline-none transition-all" type="button" @click="removeFileFromList(item.id)">
                                         <svg class="h-5 w-5" fill="none" height="22" viewBox="0 0 22 22" width="22" xmlns="http://www.w3.org/2000/svg">
@@ -229,12 +247,13 @@
 
                 <SelectQueryCategorySelectorSheet ref="refSelectQueryCategorySelectorSheet" @on-category-selected="onQueryCategorySelected" @on-close="onSelectQueryCategorySelectorSheetClose" />
                 <SelectOnBehalfOfSelectorSheet ref="refSelectOnBehalfOfSelectorSheet" @on-user-selected="onOnBehalfOfUserSelected" @on-close="onSelectOnBehalfOfSelectorSheetClose" />
+                <SelectUserByFidSelectorSheet ref="refSelectUserByFidSelectorSheet" @on-user-selected="onOnBehalfOfUserSelected" @on-close="onSelectUserByFidSelectorSheetClose" />
                 <SelectJansevakSelectorSheet ref="refSelectJansevakSelectorSheet" @on-jansevak-selected="onJansevakUserSelected" @on-close="onSelectJansevakSelectorSheetClose" />
             </template>
 
             <template #footer>
                 <div class="flex">
-                    <button :class="clsx({'bg-orange-500 text-white active:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2': !isProcessing, 'bg-gray-100 text-gray-300': isProcessing})" :disabled="isProcessing || !validationPass" class="disabled:bg-gray-50 disabled:text-gray-300 py-3.5 px-4 w-full font-medium text-xs select-none inline-flex justify-center items-center gap-2 rounded-lg border border-transparent transition-all" type="button" @click="handleCreateQuery">
+                    <button :class="clsx({'bg-orange-500 text-white active:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2': !isProcessing, 'bg-gray-100 text-gray-300': isProcessing})" :disabled="isProcessing || !validationPass || !fileValidationPass" class="disabled:bg-gray-50 disabled:text-gray-300 py-3.5 px-4 w-full font-medium text-xs select-none inline-flex justify-center items-center gap-2 rounded-lg border border-transparent transition-all" type="button" @click="handleCreateQuery">
                         <div v-show="isProcessing" aria-label="loading" class="animate-spin inline-block w-4 h-4 border-[3px] border-current border-t-transparent text-gray-300 rounded-full" role="status"></div>
                         {{ isProcessing ? "Creating Query..." : "Create Query" }}
                     </button>
@@ -245,7 +264,7 @@
 </template>
 
 <script lang="ts" setup>
-import { nextTick, reactive, ref } from "vue";
+import { nextTick, reactive, ref, watch } from "vue";
 import ModalPage from "@/components/modal-page/ModalPage.vue";
 import AppComponentBase from "@/layouts/AppComponentBase.vue";
 import PageHeading from "@/components/headings/PageHeading.vue";
@@ -258,12 +277,13 @@ import SelectOnBehalfOfSelectorSheet from "@/sheets/selector/select-on-behalf-of
 import SelectJansevakSelectorSheet from "@/sheets/selector/select-jansevak/SelectJansevakSelectorSheet.vue";
 import type { CreateQueryData } from "@/services/query.service";
 import QueryService from "@/services/query.service";
-import { set, syncRef } from "@vueuse/core";
+import { set, syncRef, useToggle } from "@vueuse/core";
 import clsx from "clsx";
 import type { Rules } from "async-validator";
 import { useAsyncValidator } from "@vueuse/integrations/useAsyncValidator";
 import { useAuthStore } from "@/stores/authStore";
 import { storeToRefs } from "pinia";
+import SelectUserByFidSelectorSheet from "@/sheets/selector/select-user-by-fid/SelectUserByFidSelectorSheet.vue";
 
 const authStore = useAuthStore();
 const { user } = storeToRefs(authStore);
@@ -273,11 +293,14 @@ const refDescriptionTextarea = ref<HTMLTextAreaElement | null>(null);
 
 const refSelectQueryCategorySelectorSheet = ref<InstanceType<typeof SelectQueryCategorySelectorSheet> | null>(null);
 const refSelectOnBehalfOfSelectorSheet = ref<InstanceType<typeof SelectOnBehalfOfSelectorSheet> | null>(null);
+const refSelectUserByFidSelectorSheet = ref<InstanceType<typeof SelectUserByFidSelectorSheet> | null>(null);
 const refSelectJansevakSelectorSheet = ref<InstanceType<typeof SelectJansevakSelectorSheet> | null>(null);
 
 const isProcessing = ref(false);
 const isOnBehalfSameAsJansevak = ref(false);
-const authUserIsJansevak = ref(user.value?.data.user_type === "JANSEVAK");
+const authUserIsJansevak = ref(user.value?.data?.user_type === "JANSEVAK");
+
+const [forSelfAndFamily, toggleSelfAndFamily] = useToggle(true);
 
 const _formDataInterface: {
     subject: string,
@@ -285,7 +308,7 @@ const _formDataInterface: {
     category: { name: string, id: string } | null,
     on_behalf_of: { full_name: string, user_type: string, avatar_url: string, type: "self" | "family" | "group", from: string, id: string } | null,
     jansevak: { full_name: string, avatar_url: string, type: "my" | "ward", from: string, id: string } | null,
-    attachments: { id: number, file: File }[],
+    attachments: { id: number, file: File, sizeValidation: boolean }[],
 } = {
     subject: "",
     description: "",
@@ -323,13 +346,21 @@ const formValidationRules: Rules = {
 };
 
 const { pass: validationPass, errorFields: validationErrors } = useAsyncValidator(formData, formValidationRules);
+const fileValidationPass = ref(true);
+
+// Watch for changes in attachments
+watch(() => formData.attachments, (attachments) => {
+    // If all attachments pass size validation or there are no attachments
+    // then set fileValidationPass to true
+    fileValidationPass.value = attachments.every((attachment) => attachment.sizeValidation) || attachments.length === 0;
+});
 
 const setQuerySubject = (event: Event) => {
-    formData.subject = (event.target as HTMLInputElement).value;
+    formData.subject = (event.target as HTMLInputElement).value.trim();
 };
 
 const setQueryDescription = (event: Event) => {
-    formData.description = (event.target as HTMLTextAreaElement).value;
+    formData.description = (event.target as HTMLTextAreaElement).value.trim();
 };
 
 const openSelectQueryCategorySelectorSheet = () => {
@@ -345,6 +376,32 @@ const onSelectQueryCategorySelectorSheetClose = () => {
 
 const onQueryCategorySelected = (queryCategory: { name: string, id: string }) => {
     formData.category = queryCategory;
+};
+
+const openOnBehalfOfUserSheet = () => {
+    if (forSelfAndFamily.value) {
+        openSelectOnBehalfOfSelectorSheet();
+    } else {
+        openSelectUserByFidSelectorSheet();
+    }
+};
+
+const openSelectUserByFidSelectorSheet = () => {
+    executeAfter(() => {
+        console.log("user.value.data.user_type", authUserIsJansevak.value, user.value?.data?.user_type);
+        let _get = "family";
+        if (authUserIsJansevak.value) {
+            _get = "my_nagarik";
+        } else if (user.value?.data?.user_type === "ADMIN") {
+            _get = "all";
+        }
+        refSelectUserByFidSelectorSheet.value?.openModal(_get);
+        refModalPage.value?.suspend();
+    });
+};
+
+const onSelectUserByFidSelectorSheetClose = () => {
+    refModalPage.value?.resume();
 };
 
 const openSelectOnBehalfOfSelectorSheet = () => {
@@ -407,7 +464,11 @@ const onFileChange = (e: Event) => {
     const files = target.files?.length ? Array.from(target.files).slice(0, 5) : null;
     if (files) {
         // Append files to list
-        formData.attachments = formData.attachments.concat(files.map(file => ({ id: Math.random(), file })));
+        formData.attachments = formData.attachments.concat(files.map(file => ({
+            id: Math.random(),
+            file,
+            sizeValidation: file.size <= 2 * 1024 * 1024,
+        })));
     }
 
     (e.target as HTMLInputElement).value = "";

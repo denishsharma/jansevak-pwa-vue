@@ -21,13 +21,23 @@
                 </PageHeading>
 
                 <AppComponentBase>
+                    <!--                    <button @click="openConfirmationYesNoSheet">weqweqwe</button>-->
+
                     <div class="flex flex-col gap-5">
                         <div class="flex justify-center items-center">
                             <div class="h-[8rem] w-[8rem] relative">
                                 <div v-if="isLoading" class="rounded-full h-full w-full object-cover object-center overflow-hidden bg-gray-100 animate-pulse transition-all"></div>
-                                <img v-else ref="refProfileImage" :src="profileImageSrc.src" alt="" class="rounded-full h-full w-full object-cover object-center overflow-hidden">
+                                <div v-else class="rounded-full h-full w-full">
+                                    <div v-if="!formData.avatar" class="rounded-full text-xxs text-gray-400 flex justify-center flex-col items-center bg-gray-50 border border-gray-200/[0.7] h-full w-full">
+                                        <div>Upload</div>
+                                        <div class="after:content-['*'] after:ml-px after:text-red-400">
+                                            Profile Image
+                                        </div>
+                                    </div>
+                                    <img v-else ref="refProfileImage" :src="profileImageSrc.src" alt="" class="rounded-full h-full w-full object-cover object-center overflow-hidden">
+                                </div>
 
-                                <button :disabled="isProcessing" class="disabled:bg-gray-50 disabled:text-gray-300 absolute z-10 right-0 bottom-0 h-9 w-9 mr-0.5 mb-0.5 inline-flex flex-shrink-0 justify-center items-center gap-2 shadow-[0_2px_10px_0_rgba(0,0,0,0.08)] rounded-full border border-gray-100 bg-white text-gray-600 hover:bg-gray-100 active:bg-gray-200 focus:outline-none transition-all" type="button" @click="openUploadProfileImageSheet">
+                                <button :disabled="isProcessing" class="disabled:bg-gray-50 disabled:text-gray-300 absolute z-10 right-0 bottom-0 h-9 w-9 mr-0.5 mb-0.5 inline-flex flex-shrink-0 justify-center items-center gap-2 shadow-[0_2px_10px_0_rgba(0,0,0,0.07)] rounded-full border border-gray-100 bg-white text-gray-600 hover:bg-gray-100 active:bg-gray-200 focus:outline-none transition-all" type="button" @click="openUploadProfileImageSheet">
                                     <svg fill="none" height="22" viewBox="0 0 22 22" width="22" xmlns="http://www.w3.org/2000/svg">
                                         <path d="M11.0002 20.167C16.0629 20.167 20.167 16.0629 20.167 11.0002C20.167 5.93751 16.0629 1.83337 11.0002 1.83337C5.93751 1.83337 1.83337 5.93751 1.83337 11.0002C1.83337 16.0629 5.93751 20.167 11.0002 20.167Z" fill="currentColor" opacity="0.35" />
                                         <path d="M14.0298 10.0835C14.5954 10.0835 14.8796 9.40148 14.4817 8.99998L11.6538 6.14542C11.2935 5.78242 10.7068 5.78242 10.3466 6.14542L7.51861 8.99998C7.12076 9.40148 7.40585 10.0835 7.97053 10.0835H14.0298Z" fill="currentColor" />
@@ -86,12 +96,12 @@
                                     Gender
                                 </div>
                                 <div class="grid grid-cols-2 gap-2">
-                                    <label :data-disabled="isProcessing" class="data-[disabled=true]:bg-gray-50 select-none flex px-4 py-3 block w-full bg-white border border-gray-200/[0.7] rounded-lg text-sm focus:border-orange-500 focus:ring-orange-500">
+                                    <label :data-disabled="isProcessing" class="data-[disabled=true]:bg-gray-50 select-none flex px-4 py-3 w-full bg-white border border-gray-200/[0.7] rounded-lg text-sm focus:border-orange-500 focus:ring-orange-500">
                                         <input :checked="'male' === formData.gender" :disabled="isProcessing" class="disabled:bg-gray-50 shrink-0 mt-0.5 border-gray-200 rounded-full text-orange-500 pointer-events-none focus:ring-orange-500" name="gender" type="radio" value="male" @input="e => setFormTextInputData(e, 'gender')">
                                         <span class="text-sm font-medium ml-3.5">Male</span>
                                     </label>
 
-                                    <label :data-disabled="isProcessing" class="data-[disabled=true]:bg-gray-50 select-none flex px-4 py-3 block w-full bg-white border border-gray-200/[0.7] rounded-lg text-sm focus:border-orange-500 focus:ring-orange-500">
+                                    <label :data-disabled="isProcessing" class="data-[disabled=true]:bg-gray-50 select-none flex px-4 py-3 w-full bg-white border border-gray-200/[0.7] rounded-lg text-sm focus:border-orange-500 focus:ring-orange-500">
                                         <input :checked="'female' === formData.gender" :disabled="isProcessing" class="disabled:bg-gray-50 shrink-0 mt-0.5 border-gray-200 rounded-full text-orange-500 pointer-events-none focus:ring-orange-500" name="gender" type="radio" value="female" @input="e => setFormTextInputData(e, 'gender')">
                                         <span class="text-sm font-medium ml-3.5">Female</span>
                                     </label>
@@ -138,7 +148,7 @@
                                     Postal Code
                                 </div>
                                 <label class="relative">
-                                    <button :disabled="isProcessing" class="group disabled:bg-gray-50 select-none text-left flex justify-between items-center py-3 px-4 block w-full border border-gray-200/[0.7] rounded-lg text-sm focus:z-10 focus:border-orange-500 focus:ring-1 focus:ring-orange-500" @click="openSelectPostOfficeSelectorSheet">
+                                    <button :disabled="isProcessing" class="group disabled:bg-gray-50 select-none text-left flex justify-between items-center py-3 px-4 w-full border border-gray-200/[0.7] rounded-lg text-sm focus:z-10 focus:border-orange-500 focus:ring-1 focus:ring-orange-500" @click="openSelectPostOfficeSelectorSheet">
                                         <div class="grow">
                                             <div v-if="formData.postOffice === null" class="font-normal text-gray-300">
                                                 Select post office
@@ -179,7 +189,7 @@
                                     Ward Code
                                 </div>
                                 <label class="relative">
-                                    <button :disabled="isProcessing" class="group disabled:bg-gray-50 select-none text-left flex justify-between items-center py-3 px-4 block w-full border border-gray-200/[0.7] rounded-lg text-sm focus:z-10 focus:border-orange-500 focus:ring-1 focus:ring-orange-500" @click="openSelectWardSelectorSheet">
+                                    <button :disabled="isProcessing" class="group disabled:bg-gray-50 select-none text-left flex justify-between items-center py-3 px-4 w-full border border-gray-200/[0.7] rounded-lg text-sm focus:z-10 focus:border-orange-500 focus:ring-1 focus:ring-orange-500" @click="openSelectWardSelectorSheet">
                                         <div class="grow">
                                             <div v-if="formData.ward === null" class="font-normal text-gray-300">
                                                 Select ward
@@ -239,7 +249,7 @@
                                     Allocate Jansevak
                                 </div>
                                 <label class="relative">
-                                    <button :disabled="isProcessing || validationErrors?.ward?.length" class="group disabled:bg-gray-50 transition-all select-none text-left flex justify-between items-center py-3 px-4 block w-full border border-gray-200/[0.7] rounded-lg text-sm focus:z-10 focus:border-orange-500 focus:ring-1 focus:ring-orange-500" @click="openSelectJansevakSelectorSheet">
+                                    <button :disabled="isProcessing || validationErrors['ward']?.length" class="group disabled:bg-gray-50 transition-all select-none text-left flex justify-between items-center py-3 px-4 w-full border border-gray-200/[0.7] rounded-lg text-sm focus:z-10 focus:border-orange-500 focus:ring-1 focus:ring-orange-500" @click="openSelectJansevakSelectorSheet">
                                         <div class="grow">
                                             <transition mode="out-in" name="fade">
                                                 <div v-if="formData.jansevak === null" class="font-normal text-gray-300">
@@ -276,6 +286,35 @@
                 <SelectWardSelectorSheet ref="refSelectWardSelectorSheet" @on-close="onSelectWardSelectorSheetClose" @on-ward-selected="onWardSelected" />
                 <SelectPostOfficeSelectorSheet ref="refSelectPostOfficeSelectorSheet" @on-close="onSelectPostOfficeSelectorSheetClose" @on-post-office-selected="onPostOfficeSelected" />
                 <SelectJansevakSelectorSheet ref="refSelectJansevakSelectorSheet" @on-close="onSelectJansevakSelectorSheetClose" @on-jansevak-selected="onJansevakUserSelected" />
+
+                <ConfirmationYesNoSheet ref="refConfirmationYesNoSheet" no-text="Continue Editing" sheet-id="setup-profile" yes-text="Send for Verification" @on-close="">
+                    <template #body>
+                        <div class="mb-4 flex flex-col items-center">
+                            <div class="h-[150px] w-full mb-4 border py-5 border-gray-200 border-dashed rounded-lg">
+                                <img :src="passwordImage" alt="" class="h-full w-full object-center object-contain">
+                            </div>
+
+                            <div class="text-center flex flex-col gap-1 mb-2">
+                                <div class="leading-tight font-bold text-lg">
+                                    <span class="inline-flex">
+                                        Verify Profile
+                                    </span>
+                                </div>
+                                <div class="flex flex-col gap-5">
+                                    <div class="leading-tight text-gray-500 text-xs px-5">
+                                        Your profile must be verified for to do certain actions in platform. Please send
+                                        your profile for verification.
+                                    </div>
+
+                                    <div class="leading-tight text-xxs text-gray-400 px-2">
+                                        Selected Jansevak will verify your profile and will contact you. Check your
+                                        profile status after some time in your profile.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </template>
+                </ConfirmationYesNoSheet>
             </template>
 
             <template #footer>
@@ -289,33 +328,37 @@
 </template>
 
 <script lang="ts" setup>
-import { vMaska } from "maska";
-import ModalPage from "@/components/modal-page/ModalPage.vue";
-import AppContainerBase from "@/layouts/AppContainerBase.vue";
+import passwordImage from "@/assets/svg/undraw_my_password_re_ydq7.svg";
+import Button from "@/components/button/Button.vue";
 import PageHeading from "@/components/headings/PageHeading.vue";
-import { nextTick, reactive, ref } from "vue";
-import router from "@/router";
-import AppComponentBase from "@/layouts/AppComponentBase.vue";
-import UploadProfileImageSheet from "@/sheets/upload-profile-image/UploadProfileImageSheet.vue";
-import { set, syncRef, useImage } from "@vueuse/core";
-import SelectWardSelectorSheet from "@/sheets/selector/select-ward/SelectWardSelectorSheet.vue";
+import ModalPage from "@/components/modal-page/ModalPage.vue";
 import { executeAfter } from "@/helpers/general";
-import { useAuthStore } from "@/stores/authStore";
-import { storeToRefs } from "pinia";
-import SelectPostOfficeSelectorSheet from "@/sheets/selector/select-post-office/SelectPostOfficeSelectorSheet.vue";
-import type { Rules } from "async-validator";
-import { useAsyncValidator } from "@vueuse/integrations/useAsyncValidator";
-import SelectJansevakSelectorSheet from "@/sheets/selector/select-jansevak/SelectJansevakSelectorSheet.vue";
-import ProfileService from "@/services/profile.service";
+import AppComponentBase from "@/layouts/AppComponentBase.vue";
+import AppContainerBase from "@/layouts/AppContainerBase.vue";
+import router from "@/router";
 import AuthService from "@/services/auth.service";
+import ProfileService from "@/services/profile.service";
+import ConfirmationYesNoSheet from "@/sheets/confirmation-yes-no/ConfirmationYesNoSheet.vue";
+import SelectJansevakSelectorSheet from "@/sheets/selector/select-jansevak/SelectJansevakSelectorSheet.vue";
+import SelectPostOfficeSelectorSheet from "@/sheets/selector/select-post-office/SelectPostOfficeSelectorSheet.vue";
+import SelectWardSelectorSheet from "@/sheets/selector/select-ward/SelectWardSelectorSheet.vue";
+import UploadProfileImageSheet from "@/sheets/upload-profile-image/UploadProfileImageSheet.vue";
+import { useAuthStore } from "@/stores/authStore";
+import { set, syncRef, useImage } from "@vueuse/core";
+import { useAsyncValidator } from "@vueuse/integrations/useAsyncValidator";
+import type { Rules } from "async-validator";
+import { storeToRefs } from "pinia";
+import { nextTick, reactive, ref } from "vue";
 
 const props = defineProps({
     title: {
         type: String,
+        required: true,
         default: "Edit Profile",
     },
     headingLeft: {
         type: String,
+        required: true,
         default: "Edit your",
     },
     headingRight: {
@@ -325,6 +368,10 @@ const props = defineProps({
     subtitle: {
         type: String,
         default: "You can make minor changes to your profile here. For major changes, please contact support.",
+    },
+    editMode: {
+        type: String,
+        default: "setup",
     },
     isEditProfile: {
         type: Boolean,
@@ -338,6 +385,8 @@ const refUploadProfileImageSheet = ref<InstanceType<typeof UploadProfileImageShe
 const refSelectWardSelectorSheet = ref<InstanceType<typeof SelectWardSelectorSheet> | null>(null);
 const refSelectPostOfficeSelectorSheet = ref<InstanceType<typeof SelectPostOfficeSelectorSheet> | null>(null);
 const refSelectJansevakSelectorSheet = ref<InstanceType<typeof SelectJansevakSelectorSheet> | null>(null);
+
+const refConfirmationYesNoSheet = ref<InstanceType<typeof ConfirmationYesNoSheet> | null>(null);
 
 const refProfileImage = ref<HTMLImageElement | null>(null);
 
@@ -461,12 +510,25 @@ const onSelectJansevakSelectorSheetClose = () => {
     refModalPage.value?.resume();
 };
 
-const onJansevakUserSelected = (user: { full_name: string, avatar_url: string, type: "my" | "ward", from: string, id: string }) => {
+const onJansevakUserSelected = (user: {
+    full_name: string,
+    avatar_url: string,
+    type: "my" | "ward",
+    from: string,
+    id: string
+}) => {
     formData.jansevak = {
         full_name: user.full_name,
         avatar_url: user.avatar_url,
         id: user.id,
     };
+};
+
+const openConfirmationYesNoSheet = () => {
+    executeAfter(() => {
+        refConfirmationYesNoSheet.value?.openModal();
+        refModalPage.value?.suspend();
+    });
 };
 
 const openModal = (data?: any) => {
@@ -497,6 +559,7 @@ const handleSetupOnSuccess = () => {
             }, 100);
         }
     });
+    syncRef(isLoading, isProcessing, { direction: "ltr" });
     execute();
 };
 
@@ -532,7 +595,9 @@ const handleSubmit = () => {
         ward: formData.ward?.code,
         jansevak: formData.jansevak?.id,
     }));
-    requestData.append("avatar", formData.avatar as File);
+    if (formData.avatar) {
+        requestData.append("avatar", formData.avatar);
+    }
 
     if (!props.isEditProfile) {
         handleSetupComplete(requestData);

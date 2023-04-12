@@ -1,5 +1,5 @@
 <template>
-    <ModalPage id="verify-otp" ref="refModalPage">
+    <ModalPage id="verify-otp" ref="refModalPage" :do-on-close="doOnClose" :do-on-open="doOnOpen">
         <AppContainerBase>
             <template #title>Verify OTP</template>
 
@@ -23,25 +23,37 @@
                 </PageHeading>
 
                 <AppComponentBase>
-                    <div class="grid grid-cols-6 gap-x-3.5">
-                        <input :disabled="isVerifying" class="py-5 px-1 block w-full text-center border-gray-200/[0.7] rounded-lg text-xl uppercase font-bold focus:z-10 focus:border-orange-500 focus:ring-orange-500 disabled:bg-gray-50" data-ref="otpFields" maxlength="1" minlength="1" pattern="." placeholder="0" type="text">
-                        <input :disabled="isVerifying" class="py-5 px-1 block w-full text-center border-gray-200/[0.7] rounded-lg text-xl uppercase font-bold focus:z-10 focus:border-orange-500 focus:ring-orange-500 disabled:bg-gray-50" data-ref="otpFields" maxlength="1" minlength="1" pattern="." placeholder="0" type="text">
-                        <input :disabled="isVerifying" class="py-5 px-1 block w-full text-center border-gray-200/[0.7] rounded-lg text-xl uppercase font-bold focus:z-10 focus:border-orange-500 focus:ring-orange-500 disabled:bg-gray-50" data-ref="otpFields" maxlength="1" minlength="1" pattern="." placeholder="0" type="text">
-                        <input :disabled="isVerifying" class="py-5 px-1 block w-full text-center border-gray-200/[0.7] rounded-lg text-xl uppercase font-bold focus:z-10 focus:border-orange-500 focus:ring-orange-500 disabled:bg-gray-50" data-ref="otpFields" maxlength="1" minlength="1" pattern="." placeholder="0" type="text">
-                        <input :disabled="isVerifying" class="py-5 px-1 block w-full text-center border-gray-200/[0.7] rounded-lg text-xl uppercase font-bold focus:z-10 focus:border-orange-500 focus:ring-orange-500 disabled:bg-gray-50" data-ref="otpFields" maxlength="1" minlength="1" pattern="." placeholder="0" type="text">
-                        <input :disabled="isVerifying" class="py-5 px-1 block w-full text-center border-gray-200/[0.7] rounded-lg text-xl uppercase font-bold focus:z-10 focus:border-orange-500 focus:ring-orange-500 disabled:bg-gray-50" data-ref="otpFields" maxlength="1" minlength="1" pattern="." placeholder="0" type="text">
+                    <div :class="{ 'shake': isInvalidOtp }" class="grid grid-cols-6 gap-x-3.5">
+                        <input :disabled="isVerifying" class="selection:bg-transparent py-5 px-1 block w-full text-center border-gray-200/[0.7] rounded-lg text-xl uppercase font-bold focus:z-10 focus:border-orange-500 focus:ring-orange-500 disabled:bg-gray-50" data-ref="otpFields" maxlength="1" minlength="1" pattern="." placeholder="0" type="text">
+                        <input :disabled="isVerifying" class="selection:bg-transparent py-5 px-1 block w-full text-center border-gray-200/[0.7] rounded-lg text-xl uppercase font-bold focus:z-10 focus:border-orange-500 focus:ring-orange-500 disabled:bg-gray-50" data-ref="otpFields" maxlength="1" minlength="1" pattern="." placeholder="0" type="text">
+                        <input :disabled="isVerifying" class="selection:bg-transparent py-5 px-1 block w-full text-center border-gray-200/[0.7] rounded-lg text-xl uppercase font-bold focus:z-10 focus:border-orange-500 focus:ring-orange-500 disabled:bg-gray-50" data-ref="otpFields" maxlength="1" minlength="1" pattern="." placeholder="0" type="text">
+                        <input :disabled="isVerifying" class="selection:bg-transparent py-5 px-1 block w-full text-center border-gray-200/[0.7] rounded-lg text-xl uppercase font-bold focus:z-10 focus:border-orange-500 focus:ring-orange-500 disabled:bg-gray-50" data-ref="otpFields" maxlength="1" minlength="1" pattern="." placeholder="0" type="text">
+                        <input :disabled="isVerifying" class="selection:bg-transparent py-5 px-1 block w-full text-center border-gray-200/[0.7] rounded-lg text-xl uppercase font-bold focus:z-10 focus:border-orange-500 focus:ring-orange-500 disabled:bg-gray-50" data-ref="otpFields" maxlength="1" minlength="1" pattern="." placeholder="0" type="text">
+                        <input :disabled="isVerifying" class="selection:bg-transparent py-5 px-1 block w-full text-center border-gray-200/[0.7] rounded-lg text-xl uppercase font-bold focus:z-10 focus:border-orange-500 focus:ring-orange-500 disabled:bg-gray-50" data-ref="otpFields" maxlength="1" minlength="1" pattern="." placeholder="0" type="text">
                     </div>
                 </AppComponentBase>
 
                 <AppComponentBase class="mt-3.5">
                     <div class="flex flex-col gap-2">
-                        <button :class="clsx({'bg-orange-500 text-white hover:bg-orange-600 active:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2': !isVerifying, 'bg-gray-100 text-gray-300': isVerifying})" :disabled="isVerifying" class="py-3.5 px-4 w-full font-medium text-xs select-none inline-flex justify-center items-center gap-2 rounded-lg border border-transparent transition-all" type="button" @click="verifyOtp">
+                        <button :disabled="isVerifying || !validationPass" class="disabled:bg-gray-100 disabled:text-gray-300 bg-orange-500 text-white active:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 py-3.5 px-4 w-full font-medium text-xs select-none inline-flex justify-center items-center gap-2 rounded-lg border border-transparent transition-all" type="button" @click="verifyOtp">
                             <div v-show="isVerifying" aria-label="loading" class="animate-spin inline-block w-4 h-4 border-[3px] border-current border-t-transparent text-gray-300 rounded-full" role="status"></div>
                             {{ isVerifying ? "Verifying..." : "Verify OTP" }}
                         </button>
 
-                        <button class="py-3 px-4 w-full text-xs select-none inline-flex justify-center items-center rounded-lg border border-transparent text-gray-500 active:bg-gray-300 focus:outline-none transition-all" type="button">
-                            Resend code in &nbsp;<span class="inline font-semibold text-gray-500">00:30</span>
+                        <button :disabled="!canResend || isResending" class="group disabled:bg-gray-50 disabled:text-gray-300 py-3 px-4 w-full text-xs select-none gap-2 inline-flex justify-center items-center rounded-lg border border-transparent text-gray-500 active:bg-gray-300 focus:outline-none transition-all" type="button" @click="handleResendOtp">
+                            <div v-show="isResending" aria-label="loading" class="animate-spin inline-block w-4 h-4 border-[3px] border-current border-t-transparent text-gray-300 rounded-full" role="status"></div>
+                            <div v-if="isResending" class="inline-flex">
+                                Resending OTP...
+                            </div>
+                            <div v-else class="inline-flex">
+                                Resend OTP
+                                <div v-if="!canResend">
+                                    &nbsp;in
+                                    <div class="inline font-semibold text-gray-500 group-disabled:text-gray-300">
+                                        {{ resendRemaining?.toFormat("mm:ss") }}
+                                    </div>
+                                </div>
+                            </div>
                         </button>
                     </div>
                 </AppComponentBase>
@@ -54,14 +66,18 @@
 import AppContainerBase from "@/layouts/AppContainerBase.vue";
 import AppComponentBase from "@/layouts/AppComponentBase.vue";
 import PageHeading from "@/components/headings/PageHeading.vue";
-import { nextTick, ref } from "vue";
+import { nextTick, onUnmounted, ref, watch } from "vue";
 import clsx from "clsx";
 import ModalPage from "@/components/modal-page/ModalPage.vue";
 import router from "@/router";
 import { useAuthStore } from "@/stores/authStore";
 import { storeToRefs } from "pinia";
 import AuthService from "@/services/auth.service";
-import { syncRef } from "@vueuse/core";
+import { set, syncRef } from "@vueuse/core";
+import type { Rules } from "async-validator";
+import { useAsyncValidator } from "@vueuse/integrations/useAsyncValidator";
+import { executeAfter } from "@/helpers/general";
+import { DateTime, Duration } from "luxon";
 
 const emit = defineEmits(["on-verify"]);
 
@@ -69,6 +85,24 @@ const refModalPage = ref<InstanceType<typeof ModalPage> | null>(null);
 const otpFields = ref<HTMLInputElement[]>([]);
 
 const isVerifying = ref(false);
+const isResending = ref(false);
+const isInvalidOtp = ref(false);
+const otpValue = ref<{ otp: string }>({ otp: "" });
+
+let resendIn = DateTime.now().plus({ seconds: 45 });
+const canResend = ref(false);
+const resendTick = ref<number>();
+const resendRemaining = ref<Duration>(resendIn.diffNow());
+
+const formValidationRules: Rules = {
+    otp: {
+        required: true,
+        type: "string",
+        len: 6,
+    },
+};
+
+const { pass: validationPass } = useAsyncValidator(otpValue, formValidationRules);
 
 const authStore = useAuthStore();
 const { user } = storeToRefs(authStore);
@@ -90,8 +124,18 @@ const handleOnSuccess = (data) => {
     router.back();
 };
 
-const handleOnError = (data) => {
-    console.log("error", data);
+const handleOnError = () => {
+    // clear otp
+    otpFields.value.forEach((field) => {
+        field.value = "";
+    });
+    otpFields.value[0].focus();
+    isInvalidOtp.value = true;
+    otpValue.value.otp = "";
+
+    executeAfter(() => {
+        isInvalidOtp.value = false;
+    }, 1000);
 };
 
 const verifyOtp = () => {
@@ -116,6 +160,8 @@ const handleInput = (e: Event) => {
             otpFields.value[index - 1].focus();
         }
     }
+
+    otpValue.value.otp = otpFields.value.map((field) => field.value).join("");
 };
 
 const handlePaste = (e: ClipboardEvent) => {
@@ -131,7 +177,6 @@ const handleBackspace = (e: KeyboardEvent) => {
     const target = e.target as HTMLInputElement;
     const index = otpFields.value.indexOf(target);
 
-
     if (e.key === "Backspace") {
         e.preventDefault();
         if (target.value.length === 0) {
@@ -144,11 +189,30 @@ const handleBackspace = (e: KeyboardEvent) => {
         }
     }
 
+    otpValue.value.otp = otpFields.value.map((field) => field.value).join("");
 };
 
 const handleFocus = (e: Event) => {
     const target = e.target as HTMLInputElement;
     target.select();
+};
+
+const handleResendOtpOnSuccess = () => {
+    set(canResend, false);
+    startResendTimer(60);
+};
+
+const resendOtp = () => {
+    if (!canResend.value) return;
+    executeAfter(() => {
+        const { isLoading, execute } = AuthService.resendOtp({ id: user.value.id || "" }, handleResendOtpOnSuccess);
+        syncRef(isLoading, isResending);
+        execute();
+    });
+};
+
+const handleResendOtp = () => {
+    resendOtp();
 };
 
 const attachEventListeners = () => {
@@ -161,6 +225,57 @@ const attachEventListeners = () => {
     });
 };
 
+const startResendTimer = (seconds?: number) => {
+    seconds && (resendIn = DateTime.now().plus({ seconds }));
+    resendTick.value = setInterval(() => {
+        const remaining = resendIn.diffNow();
+        set(resendRemaining, remaining);
+
+        if (remaining.as("seconds") <= 0) {
+            clearInterval(resendTick.value);
+            set(canResend, true);
+            resendIn = DateTime.now().plus({ seconds: 1 });
+        }
+    }, 1000);
+};
+
+const doOnOpen = () => {
+    resendIn = DateTime.now().plus({ seconds: 45 });
+
+    executeAfter(() => {
+        startResendTimer();
+    });
+};
+
+const doOnClose = () => {
+    clearInterval(resendTick.value);
+    set(resendRemaining, resendIn.diffNow());
+    set(canResend, false);
+
+    executeAfter(() => {
+        otpFields.value.forEach((field) => {
+            field.removeEventListener("focus", handleFocus);
+            field.removeEventListener("paste", handlePaste);
+            field.removeEventListener("input", handleInput);
+            field.removeEventListener("keydown", handleBackspace);
+        });
+
+        otpFields.value.forEach((field) => {
+            field.value = "";
+        });
+
+        set(otpValue, { otp: "" });
+        set(isInvalidOtp, false);
+        set(isVerifying, false);
+
+
+    }, 100);
+};
+
+onUnmounted(() => {
+    clearInterval(resendTick.value);
+});
+
 defineExpose({
     openModal,
     closeModal: () => refModalPage.value?.closeModal(),
@@ -170,6 +285,24 @@ defineExpose({
 });
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
+.shake {
+    transform: translate3d(0, 0, 0);
+    animation: shake 0.82s cubic-bezier(.36, .07, .19, .97) both;
+}
 
+@keyframes shake {
+    10%, 90% {
+        transform: translate3d(-1px, 0, 0);
+    }
+    20%, 80% {
+        transform: translate3d(2px, 0, 0);
+    }
+    30%, 50%, 70% {
+        transform: translate3d(-4px, 0, 0);
+    }
+    40%, 60% {
+        transform: translate3d(4px, 0, 0);
+    }
+}
 </style>

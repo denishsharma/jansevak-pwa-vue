@@ -1,57 +1,75 @@
 <template>
-    <Carousel :model-value="currentCarouselIndex" :transition="500" :wrapAround="true" @slide-end="onSlideEnd">
-        <Slide v-for="slide in 10" :key="slide" class="w-full">
-            <div class="carousel__item bg-gray-100 grow aspect-video rounded-xl">
-            </div>
-        </Slide>
+    <transition mode="out-in" name="fade-scale">
+        <div v-if="slides.length > 0" class="mb-6">
+            <Splide ref="refSplide" :has-track="false" :options="splideOptions">
+                <div class="flex flex-col gap-2">
+                    <SplideTrack>
+                        <SplideSlide v-if="user['data'] && ['JANSEVAK', 'ADMIN'].includes(user['data'].user_type)">
+                            <div class="bg-gray-100 grow aspect-video rounded-xl overflow-hidden">
+                                wqewe
+                            </div>
+                        </SplideSlide>
 
-        <template #addons>
-            <Pagination />
-        </template>
-    </Carousel>
+                        <SplideSlide v-for="(slide, index) in slides" :key="index">
+                            <div class="bg-gray-100 grow aspect-video rounded-xl overflow-hidden">
+                                <img :src="resolveFileUrl(slide.image) || ''" alt="" class="h-full w-full object-cover object-center">
+                            </div>
+                        </SplideSlide>
+                    </SplideTrack>
+
+                    <div>
+                        <ul class="splide__pagination"></ul>
+                    </div>
+                </div>
+            </Splide>
+        </div>
+    </transition>
 </template>
 
 <script lang="ts" setup>
-import { Carousel, Slide, Pagination } from "vue3-carousel";
-import { useHomeViewStore } from "@/stores/homeViewStore";
+import type { Options } from "@splidejs/splide";
+import { Splide, SplideSlide, SplideTrack } from "@splidejs/vue-splide";
 import { storeToRefs } from "pinia";
+import { useAuthStore } from "@/stores/authStore";
+import { onMounted, onUnmounted, ref } from "vue";
+import { executeAfter, resolveFileUrl } from "@/helpers/general";
 
-const homeViewStore = useHomeViewStore();
+const slides = ref<{ image: string }[]>([]);
 
-const { currentCarouselIndex } = storeToRefs(homeViewStore);
-const { setCurrentCarouselIndex } = homeViewStore;
+onMounted(() => {
+    refSplide.value?.splide?.refresh();
 
-const onSlideEnd = (e: { currentSlideIndex: number, prevSlideIndex: number, slidesCount: number }) => {
-    setCurrentCarouselIndex(e.currentSlideIndex);
-};
+    executeAfter(() => {
+        slides.value = [
+            { image: "https://picsum.photos/seed/picsum/200/300" },
+            { image: "https://picsum.photos/seed/picsum1/200/300" },
+            { image: "https://picsum.photos/seed/picsum2/200/300" },
+            { image: "https://picsum.photos/seed/picsum3/200/300" },
+            { image: "https://picsum.photos/seed/picsum5/200/300" },
+            { image: "https://picsum.photos/seed/picsum6/200/300" },
+        ];
+    });
+});
 
+onUnmounted(() => {
+    refSplide.value?.splide?.destroy(true);
+    executeAfter(() => {
+        slides.value = [];
+    }, 100);
+});
+
+const authStore = useAuthStore();
+const { user } = storeToRefs(authStore);
+
+const refSplide = ref<InstanceType<typeof Splide>>();
+
+const splideOptions: Options = ref<Options>({
+    gap: "1rem",
+    arrows: false,
+    pagination: true,
+});
 </script>
 
 <style lang="scss" scoped>
-.carousel__track {
-    transform-style: preserve-3d;
-}
 
-.carousel__slide--sliding {
-    transition: 0.5s;
-}
-
-.carousel__slide--active ~ .carousel__slide {
-    transform: rotateY(20deg) scale(0.9);
-}
-
-.carousel__slide--prev {
-    transform: rotateY(-10deg) scale(0.95);
-    opacity: 1;
-}
-
-.carousel__slide--next {
-    transform: rotateY(10deg) scale(0.95);
-    opacity: 1;
-}
-
-.carousel__slide--active {
-    transform: rotateY(0) scale(1);
-    opacity: 1;
-}
 </style>

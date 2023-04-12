@@ -18,11 +18,32 @@
             </PageHeading>
 
             <AppComponentBase class="overflow-y-auto">
-                <div class="flex flex-wrap gap-1.5 py-2 overflow-y-auto" data-ref="parent">
-                    <div v-for="(result, index) in postOffices" :key="result.id" ref="refPostOfficeItems" :class="selectedPostOffice?.id === result.id ? 'border-orange-500 text-orange-500 bg-orange-100' : 'border-gray-200 hover:bg-gray-100 active:bg-gray-200'" :data-index="index" :data-selected="selectedPostOffice?.id === result.id" class="py-2.5 px-3 w-fit font-medium text-xs select-none inline-flex text-left items-center gap-2 rounded-lg border focus:outline-none transition-all" data-visible="" @click="setSelectedPostOffice(result.id)">
-                        {{ result.name }}
-                    </div>
-                </div>
+                <transition mode="out-in" name="fade">
+                    <SelectorItemsSkeleton v-if="isFetching" />
+                    <transition v-else mode="out-in" name="fade">
+                        <div v-if="postOffices.length === 0" class="bg-white py-4 text-sm border border-transparent rounded-lg flex flex-col items-center justify-center">
+                            <div class="mb-2 h-9 w-9 bg-gray-50 text-gray-300 rounded-xl flex">
+                                <svg class="h-6 w-6 mx-auto my-auto" fill="none" height="22" viewBox="0 0 22 22" width="22" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M11.0002 20.167C16.0629 20.167 20.167 16.0629 20.167 11.0002C20.167 5.93751 16.0629 1.83337 11.0002 1.83337C5.93751 1.83337 1.83337 5.93751 1.83337 11.0002C1.83337 16.0629 5.93751 20.167 11.0002 20.167Z" fill="currentColor" opacity="0.35" />
+                                    <path d="M15.9027 13.4854C16.2822 12.7383 16.5004 11.8958 16.5004 11.0002C16.5004 7.96233 14.0382 5.50012 11.0003 5.50012C10.1047 5.50012 9.26223 5.71829 8.51514 6.0978L15.9027 13.4854Z" fill="currentColor" />
+                                    <path d="M6.0978 8.51514C5.71829 9.26223 5.50012 10.1047 5.50012 11.0003C5.50012 14.0382 7.96233 16.5004 11.0002 16.5004C11.8958 16.5004 12.7383 16.2822 13.4854 15.9027L6.0978 8.51514Z" fill="currentColor" />
+                                </svg>
+                            </div>
+                            <div class="text-xs font-semibold text-gray-300">
+                                No Post Office Found
+                            </div>
+                            <div class="text-xxs text-gray-300 text-center w-4/5 leading-tight mt-0.5">
+                                You might have entered an invalid post office name or your post office is not yet
+                                available in our system. Search using pincode below.
+                            </div>
+                        </div>
+                        <div v-else class="flex flex-wrap gap-1.5 py-2 overflow-y-auto" data-ref="parent">
+                            <div v-for="(result, index) in postOffices" :key="result.id" ref="refPostOfficeItems" :class="selectedPostOffice?.id === result.id ? 'border-orange-500 text-orange-500 bg-orange-100' : 'border-gray-200 hover:bg-gray-100 active:bg-gray-200'" :data-index="index" :data-selected="selectedPostOffice?.id === result.id" class="py-2.5 px-3 w-fit font-medium text-xs select-none inline-flex text-left items-center gap-2 rounded-lg border focus:outline-none transition-all" data-visible="" @click="setSelectedPostOffice(result.id)">
+                                {{ result.name }}
+                            </div>
+                        </div>
+                    </transition>
+                </transition>
             </AppComponentBase>
 
             <AppComponentBase class="mt-4 shrink-0">
@@ -57,6 +78,7 @@ import router from "@/router";
 import { executeAfter } from "@/helpers/general";
 import { set, syncRef, useAsyncState, useDebounceFn } from "@vueuse/core";
 import WardService from "@/services/ward.service";
+import SelectorItemsSkeleton from "@/skeleton/SelectorItemsSkeleton.vue";
 
 interface PostOfficeItem {
     id: string;
@@ -105,29 +127,15 @@ const handleWardListOnSuccess = (data: any) => {
             district: postOffice.District,
             state: postOffice.State,
         }));
-        console.log("qweqw");
     } else {
         postOffices.value = [];
     }
-
-    // executeAfter(() => {
-    //     const _selectedPostOfficeElement = refWardItems.value.find((el) => el.dataset.selected === "true");
-    //     if (_selectedPostOfficeElement) {
-    //         _selectedPostOfficeElement.scrollIntoView({ behavior: "smooth", block: "center" });
-    //     }
-    // }, 10);
 };
 
-
 const fetchPostOffices = (pincode: string) => {
-    executeAfter(() => {
-        const {
-            isLoading,
-            execute,
-        } = WardService.postOfficeList({ pincode }, handleWardListOnSuccess);
-        syncRef(isLoading, isFetching);
-        execute();
-    }, 100);
+    const { execute, isLoading } = WardService.postOfficeList({ pincode }, handleWardListOnSuccess);
+    syncRef(isLoading, isFetching);
+    execute();
 };
 
 const debounceFetch = useDebounceFn((args) => {
@@ -135,9 +143,12 @@ const debounceFetch = useDebounceFn((args) => {
         return;
     }
     fetchPostOffices(args);
-}, 400, { maxWait: 5000 });
+}, 700, { maxWait: 5000, rejectOnCancel: true });
 
-watch(searchTerm, debounceFetch);
+watch(searchTerm, async (e) => {
+    set(isFetching, true);
+    await debounceFetch(e);
+});
 
 const doOnClose = () => {
     executeAfter(() => {

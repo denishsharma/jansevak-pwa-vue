@@ -2,13 +2,13 @@
     <TransitionRoot :show="isOpen" appear as="template">
         <Dialog as="div" class="relative z-40 transition-all" @close="closeModalOnBackdropClick">
             <TransitionChild
-                    as="template"
-                    enter="duration-100 ease-out"
-                    enter-from="opacity-0"
-                    enter-to="opacity-100"
-                    leave="duration-100 ease-in"
-                    leave-from="opacity-100"
-                    leave-to="opacity-0"
+                as="template"
+                enter="duration-100 ease-out"
+                enter-from="opacity-0"
+                enter-to="opacity-100"
+                leave="duration-100 ease-in"
+                leave-from="opacity-100"
+                leave-to="opacity-0"
             >
                 <div class="fixed inset-0 bg-black bg-opacity-20" />
             </TransitionChild>
@@ -16,15 +16,16 @@
             <div class="fixed inset-0 overflow-hidden">
                 <div class="flex flex-col justify-end h-full">
                     <TransitionChild
-                            as="template"
-                            enter="duration-100 origin-bottom ease-out"
-                            enter-from="opacity-0 translate-y-4"
-                            enter-to="opacity-100 translate-y-0"
-                            leave="duration-100 origin-bottom ease-in"
-                            leave-from="opacity-100 translate-y-0"
-                            leave-to="opacity-0 translate-y-4"
+                        as="template"
+                        enter="duration-100 origin-bottom ease-out"
+                        enter-from="opacity-0 translate-y-4"
+                        enter-to="opacity-100 translate-y-0"
+                        leave="duration-100 origin-bottom ease-in"
+                        leave-from="opacity-100 translate-y-0"
+                        leave-to="opacity-0 translate-y-4"
                     >
-                        <DialogPanel :class="$attrs.class" class="w-full bg-white rounded-tl-2xl rounded-tr-2xl transform overflow-hidden transition-all border-t border-gray-200/[0.7] shadow-[0_-10px_40px_0_rgba(0,0,0,0.05)]">
+                        <DialogPanel :class="$attrs.class"
+                                     class="w-full bg-white rounded-tl-2xl rounded-tr-2xl transform overflow-hidden transition-all border-t border-gray-200/[0.7] shadow-[0_-10px_40px_0_rgba(0,0,0,0.05)]">
                             <div class="flex flex-col h-full overflow-hidden">
                                 <div v-if="false" ref="refHandle" class="py-2.5 gap-0.5 flex flex-col items-center">
                                     <div class="h-0.5 w-7 bg-gray-100 rounded-full"></div>
@@ -43,12 +44,12 @@
 </template>
 
 <script lang="ts" setup>
-import { TransitionRoot, TransitionChild, Dialog, DialogPanel } from "@headlessui/vue";
-import { nextTick, ref } from "vue";
-import router from "@/router";
-import { useDebounceFn, useEventBus } from "@vueuse/core";
-import { globalEventKey } from "@/helpers/globalEvent";
 import { executeAfter } from "@/helpers/general";
+import { globalEventKey } from "@/helpers/globalEvent";
+import router from "@/router";
+import { Dialog, DialogPanel, TransitionChild, TransitionRoot } from "@headlessui/vue";
+import { useEventBus } from "@vueuse/core";
+import { nextTick, ref } from "vue";
 
 const props = defineProps({
     id: {

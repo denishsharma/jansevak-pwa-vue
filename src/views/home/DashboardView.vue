@@ -2,11 +2,13 @@
     <div ref="refPageContent" class="grow -mb-8 pb-8">
         <AppComponentBase class="pb-6">
             <CarouselHomeFragment />
-        </AppComponentBase>
 
-        <AppComponentBase class="pb-6">
+            <div class="mb-3">
+                <QueryStatusOverviewStatisticChart />
+            </div>
+
             <div class="grid grid-cols-2 gap-x-3 gap-y-3">
-                <button class="text-left overflow-hidden relative rounded-xl border border-gray-200/[0.7] select-none px-2.5 py-2.5 flex items-center hover:bg-gray-50 active:bg-gray-100 focus:outline-none transition-all" @click="openCreateQueryModal">
+                <button class="text-left overflow-hidden relative rounded-xl border border-gray-200/[0.7] select-none px-2.5 py-2.5 flex items-center active:bg-gray-50 focus:outline-none transition-all" @click="openCreateQueryModal">
                     <div class="bg-orange-50 text-orange-500 flex justify-center items-center h-9 w-9 rounded-lg">
                         <div class="h-5 w-5">
                             <svg class="h-full w-full" fill="none" height="22" viewBox="0 0 22 22" width="22" xmlns="http://www.w3.org/2000/svg">
@@ -22,7 +24,7 @@
                     </div>
                 </button>
 
-                <button class="text-left overflow-hidden relative rounded-xl border border-gray-200/[0.7] select-none px-2.5 py-2.5 flex items-center hover:bg-gray-50 active:bg-gray-100 focus:outline-none transition-all">
+                <button class="text-left overflow-hidden relative rounded-xl border border-gray-200/[0.7] select-none px-2.5 py-2.5 flex items-center active:bg-gray-100 focus:outline-none transition-all" @click="openGiveFeedbackModal">
                     <div class="bg-orange-50 text-orange-500 flex justify-center items-center h-9 w-9 rounded-lg">
                         <div class="h-5 w-5">
                             <svg class="h-full w-full" fill="none" height="22" viewBox="0 0 22 22" width="22" xmlns="http://www.w3.org/2000/svg">
@@ -37,7 +39,7 @@
                     </div>
                 </button>
 
-                <button class="text-left overflow-hidden relative rounded-xl border border-gray-200/[0.7] select-none px-2.5 py-2.5 flex items-center hover:bg-gray-50 active:bg-gray-100 focus:outline-none transition-all" @click="openFAQModal">
+                <button class="text-left overflow-hidden relative rounded-xl border border-gray-200/[0.7] select-none px-2.5 py-2.5 flex items-center active:bg-gray-50 focus:outline-none transition-all" @click="openFAQModal">
                     <div class="bg-orange-50 text-orange-500 flex justify-center items-center h-9 w-9 rounded-lg">
                         <div class="h-5 w-5">
                             <svg class="h-full w-full" fill="none" height="22" viewBox="0 0 22 22" width="22" xmlns="http://www.w3.org/2000/svg">
@@ -57,7 +59,7 @@
                     </div>
                 </button>
 
-                <button class="text-left overflow-hidden relative rounded-xl border border-gray-200/[0.7] select-none px-2.5 py-2.5 flex items-center hover:bg-gray-50 active:bg-gray-100 focus:outline-none transition-all">
+                <button v-if="user['data'].user_type === 'NAGRIK'" class="text-left overflow-hidden relative rounded-xl border border-gray-200/[0.7] select-none px-2.5 py-2.5 flex items-center active:bg-gray-50 focus:outline-none transition-all" @click="openProfileSummaryModal">
                     <div class="bg-orange-50 text-orange-500 flex justify-center items-center h-9 w-9 rounded-lg">
                         <div class="h-5 w-5">
                             <svg class="h-full w-full" fill="none" height="22" viewBox="0 0 22 22" width="22" xmlns="http://www.w3.org/2000/svg">
@@ -69,6 +71,23 @@
                     <div class="flex flex-col gap-0.5 justify-center ml-2.5">
                         <div class="leading-none text-xs text-gray-500 font-medium">Allotted</div>
                         <div class="leading-none text-xs font-semibold text-orange-500">Jansevak</div>
+                    </div>
+                </button>
+
+                <button v-if="['JANSEVAK', 'ADMIN'].includes(user['data'].user_type)" class="text-left overflow-hidden relative rounded-xl border border-gray-200/[0.7] select-none px-2.5 py-2.5 flex items-center active:bg-gray-50 focus:outline-none transition-all" @click="openProfileSummaryModal">
+                    <div class="bg-orange-50 text-orange-500 flex justify-center items-center h-9 w-9 rounded-lg">
+                        <div class="h-5 w-5">
+                            <svg class="h-full w-full" fill="none" height="22" viewBox="0 0 22 22" width="22" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M6.87514 9.16678C8.64709 9.16678 10.0835 7.73034 10.0835 5.95839C10.0835 4.18645 8.64709 2.75 6.87514 2.75C5.10319 2.75 3.66675 4.18645 3.66675 5.95839C3.66675 7.73034 5.10319 9.16678 6.87514 9.16678Z" fill="currentColor" opacity="0.35" />
+                                <path d="M15.1253 9.16678C16.8972 9.16678 18.3337 7.73034 18.3337 5.95839C18.3337 4.18645 16.8972 2.75 15.1253 2.75C13.3533 2.75 11.9169 4.18645 11.9169 5.95839C11.9169 7.73034 13.3533 9.16678 15.1253 9.16678Z" fill="currentColor" opacity="0.35" />
+                                <path d="M20.1671 16.0419C20.1671 17.8111 18.7279 19.2503 16.9587 19.2503H9.62524C11.3944 19.2503 12.8336 17.8111 12.8336 16.0419C12.8336 15.1619 12.4761 14.3552 11.8895 13.7777C11.3119 13.191 10.5053 12.8335 9.62524 12.8335H16.9587C18.7279 12.8335 20.1671 14.2727 20.1671 16.0419Z" fill="currentColor" />
+                                <path d="M13.7503 12.8335V19.2503H5.04177C4.16175 19.2503 3.35507 18.8928 2.77756 18.3061C2.19088 17.7286 1.83337 16.9219 1.83337 16.0419C1.83337 14.2727 3.27257 12.8335 5.04177 12.8335H13.7503Z" fill="currentColor" opacity="0.35" />
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="flex flex-col gap-0.5 justify-center ml-2.5">
+                        <div class="leading-none text-xs text-gray-500 font-medium">Verify</div>
+                        <div class="leading-none text-xs font-semibold text-orange-500">Nagarik</div>
                     </div>
                 </button>
             </div>
@@ -97,11 +116,13 @@
 
         <FAQModalPage ref="refFAQModal" />
         <CreateQueryModalPage ref="refCreateQueryModalPage" />
+        <ProfileSummaryModalPage ref="refProfileSummaryModalPage" />
+        <GiveFeedbackModalPage ref="refGiveFeedbackModalPage" />
     </div>
 </template>
 
 <script lang="ts" setup>
-import { onMounted, onUnmounted, ref } from "vue";
+import { onMounted, onUnmounted, ref, computed } from "vue";
 import PullToRefresh from "pulltorefreshjs";
 import { arrowMarkup, cssMarkup, htmlMarkup, spinnerMarkup } from "@/config/pullToRefresh";
 import AppComponentBase from "@/layouts/AppComponentBase.vue";
@@ -110,10 +131,20 @@ import CarouselHomeFragment from "@/fragments/home/CarouselHomeFragment.vue";
 import FAQModalPage from "@/modals/faq/FAQModalPage.vue";
 import CreateQueryModalPage from "@/modals/query/CreateQueryModalPage.vue";
 import { executeAfter } from "@/helpers/general";
+import { useAuthStore } from "@/stores/authStore";
+import { storeToRefs } from "pinia";
+import ProfileSummaryModalPage from "@/modals/profile/ProfileSummaryModalPage.vue";
+import QueryStatusOverviewStatisticChart from "@/fragments/stats/QueryStatusOverviewStatisticChart.vue";
+import GiveFeedbackModalPage from "@/modals/misc/GiveFeedbackModalPage.vue";
 
 const refPageContent = ref<string | undefined>(undefined);
 const refFAQModal = ref<InstanceType<typeof FAQModalPage> | null>(null);
 const refCreateQueryModalPage = ref<InstanceType<typeof CreateQueryModalPage> | null>(null);
+const refProfileSummaryModalPage = ref<InstanceType<typeof ProfileSummaryModalPage> | null>(null);
+const refGiveFeedbackModalPage = ref<InstanceType<typeof GiveFeedbackModalPage> | null>(null);
+
+const authStore = useAuthStore();
+const { user } = storeToRefs(authStore);
 
 const openCreateQueryModal = () => {
     executeAfter(() => {
@@ -124,6 +155,12 @@ const openCreateQueryModal = () => {
 const openFAQModal = () => {
     executeAfter(() => {
         refFAQModal.value?.openModal();
+    });
+};
+
+const openGiveFeedbackModal = () => {
+    executeAfter(() => {
+        refGiveFeedbackModalPage.value?.openModal();
     });
 };
 
@@ -147,6 +184,12 @@ const initiatePullToRefresh = () => {
         shouldPullToRefresh(): boolean {
             return !(this.mainElement as unknown as HTMLElement)?.scrollTop;
         },
+    });
+};
+
+const openProfileSummaryModal = () => {
+    executeAfter(() => {
+        refProfileSummaryModalPage.value?.openModal(user.value.data.allocation.allocatedToUser.uuid);
     });
 };
 

@@ -1,9 +1,10 @@
+import { useAuthStore } from "@/stores/authStore";
 import type { AxiosError, AxiosResponse } from "axios";
 import axios from "axios";
-import { useAuthStore } from "@/stores/authStore";
 import { storeToRefs } from "pinia";
 
-export const TEMP_HOST = "https://rotten-points-shop-49-36-102-36.loca.lt";
+export const TEMP_HOST = "https://jansevak.loophole.site";
+// export const TEMP_HOST = "http://14.141.78.150";
 // export const TEMP_HOST = "http://localhost:3333";
 
 // const API_URL = `${import.meta.env.VITE_API_URL}/api/`;

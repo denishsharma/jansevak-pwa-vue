@@ -6,13 +6,13 @@
                 <span v-if="emphasis" class="inline-flex text-orange-500 font-extrabold">{{ emphasis }}</span>
             </div>
             <div class="text-gray-500 leading-tight text-xs mr-10">
-                <slot name="subtitle" />
+                <slot name="subtitle"/>
             </div>
         </div>
     </AppComponentBase>
 </template>
 
-<script setup lang="ts">
+<script lang="ts" setup>
 import AppComponentBase from "@/layouts/AppComponentBase.vue";
 
 defineProps<{

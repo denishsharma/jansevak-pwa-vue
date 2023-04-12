@@ -1,13 +1,26 @@
+import { LocalNotifications } from "@capacitor/local-notifications";
 import { createApp } from "vue";
 import { createPinia } from "pinia";
 import piniaPluginPersistedState from "pinia-plugin-persistedstate";
 
+import ApexCharts from "apexcharts";
+import { vMaska } from "maska";
+
+declare module "@vue/runtime-core" {
+    interface ComponentCustomProperties {
+        $apexCharts: typeof ApexCharts;
+    }
+}
+
 import { App as CapacitorApp } from "@capacitor/app";
 
+import "@splidejs/splide/dist/css/splide-core.min.css";
 import "@/assets/css/style.scss";
 
 import App from "./App.vue";
 import mitt from "mitt";
+import VueSplide from "@splidejs/vue-splide";
+import VueApexCharts from "vue3-apexcharts";
 import router from "./router";
 import { executeAfter } from "@/helpers/general";
 
@@ -19,6 +32,10 @@ pinia.use(piniaPluginPersistedState);
 
 app.use(pinia);
 app.use(router);
+app.use(VueSplide);
+app.use(VueApexCharts);
+
+app.directive("maska", vMaska);
 
 app.config.errorHandler = (err, vm, info) => {
     console.log(err);
@@ -26,6 +43,7 @@ app.config.errorHandler = (err, vm, info) => {
     console.log(info);
 };
 
+app.config.globalProperties.$apexCharts = ApexCharts;
 app.config.globalProperties.emitter = emitter;
 app.mount("#app");
 
@@ -34,6 +52,16 @@ CapacitorApp.addListener("backButton", async (canGoBack) => {
         router.back();
     } else {
         await CapacitorApp.exitApp();
+    }
+});
+
+LocalNotifications.checkPermissions().then((res) => {
+    if (res.display !== "granted") {
+        LocalNotifications.requestPermissions().then((_res) => {
+            if (_res.display !== "granted") {
+                console.log("Notification permission denied");
+            }
+        });
     }
 });
 

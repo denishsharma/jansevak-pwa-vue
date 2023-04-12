@@ -2,13 +2,13 @@
     <TransitionRoot :show="isOpen" appear as="template">
         <Dialog :initial-focus="initialFocus" as="div" class="relative z-40">
             <TransitionChild
-                    as="template"
-                    enter="duration-100 ease-out"
-                    enter-from="opacity-0"
-                    enter-to="opacity-100"
-                    leave="duration-100 ease-in"
-                    leave-from="opacity-100"
-                    leave-to="opacity-0"
+                as="template"
+                enter="duration-100 ease-out"
+                enter-from="opacity-0"
+                enter-to="opacity-100"
+                leave="duration-100 ease-in"
+                leave-from="opacity-100"
+                leave-to="opacity-0"
             >
                 <div class="fixed inset-0 bg-black bg-opacity-5" />
             </TransitionChild>
@@ -16,13 +16,13 @@
             <div class="fixed inset-0 overflow-hidden">
                 <div class="flex h-full">
                     <TransitionChild
-                            as="template"
-                            enter="duration-100 ease-out"
-                            enter-from="opacity-0 scale-95"
-                            enter-to="opacity-100 scale-100"
-                            leave="duration-100 ease-in"
-                            leave-from="opacity-100 scale-100"
-                            leave-to="opacity-0 scale-95"
+                        as="template"
+                        enter="duration-100 ease-out"
+                        enter-from="opacity-0 scale-95"
+                        enter-to="opacity-100 scale-100"
+                        leave="duration-100 ease-in"
+                        leave-from="opacity-100 scale-100"
+                        leave-to="opacity-0 scale-95"
                     >
                         <DialogPanel :class="$attrs.class" class="w-full h-full bg-white transform overflow-hidden transition-all">
                             <slot />
@@ -35,9 +35,9 @@
 </template>
 
 <script lang="ts" setup>
-import { TransitionRoot, TransitionChild, Dialog, DialogPanel } from "@headlessui/vue";
-import { nextTick, ref } from "vue";
 import router from "@/router";
+import { Dialog, DialogPanel, TransitionChild, TransitionRoot } from "@headlessui/vue";
+import { nextTick, ref } from "vue";
 
 const props = defineProps({
     id: {
@@ -62,6 +62,7 @@ const props = defineProps({
     },
 });
 
+let modalId = props.id;
 const isOpen = ref(false);
 const isSuspend = ref(false);
 
@@ -78,8 +79,8 @@ const goBack = () => {
         return;
     }
 
-    console.log("close from modal [replace]", router.currentRoute.value.fullPath.replace(`#modal-page-${props.id}`, ""));
-    router.replace(router.currentRoute.value.fullPath.replace(`#modal-page-${props.id}`, ""));
+    console.log("close from modal [replace]", router.currentRoute.value.fullPath.replace(`#modal-page-${modalId}`, ""));
+    router.replace(router.currentRoute.value.fullPath.replace(`#modal-page-${modalId}`, ""));
 
     closeModal();
 
@@ -89,15 +90,17 @@ const goBack = () => {
 const closeModal = () => {
     isOpen.value = false;
     window.removeEventListener("popstate", popstateHandler);
-    console.log("remove event listeners", props.id);
+    console.log("remove event listeners", modalId);
     props.doOnClose();
     emit("on-close");
 };
 
-const openModal = () => {
+const openModal = (id?: string) => {
     isOpen.value = true;
-    console.log("open from modal [push]", router.currentRoute.value.fullPath.replace(`#modal-page-${props.id}`, "") + `#modal-page-${props.id}`);
-    router.push(router.currentRoute.value.fullPath.replace(`#modal-page-${props.id}`, "") + `#modal-page-${props.id}`);
+    id && (modalId = id);
+    console.log(modalId);
+    console.log("open from modal [push]", router.currentRoute.value.fullPath.replace(`#modal-page-${modalId}`, "") + `#modal-page-${modalId}`);
+    router.push(router.currentRoute.value.fullPath.replace(`#modal-page-${modalId}`, "") + `#modal-page-${modalId}`);
     nextTick(() => {
         attachEventListeners();
         props.doOnOpen();
@@ -111,14 +114,14 @@ const popstateHandler = (e: PopStateEvent) => {
     }
 
     e.preventDefault();
-    console.trace("popstate handler", props.id);
+    console.trace("popstate handler", modalId);
     console.log(e);
     closeModal();
 };
 
 const attachEventListeners = () => {
     window.addEventListener("popstate", popstateHandler);
-    console.log("attach event listeners", props.id);
+    console.log("attach event listeners", modalId);
 };
 
 const emit = defineEmits(["on-close", "on-open"]);

@@ -123,14 +123,14 @@
 </template>
 
 <script lang="ts" setup>
-import AppContainerBase from "@/layouts/AppContainerBase.vue";
-import router from "@/router";
-import { nextTick, onMounted, onUpdated, ref } from "vue";
-import ProtectedView from "@/views/controller/ProtectedView.vue";
-import CreateNewSheet from "@/sheets/create-new/CreateNewSheet.vue";
-import CreateQueryModalPage from "@/modals/query/CreateQueryModalPage.vue";
-import { executeAfter } from "@/helpers/general";
 import platformLogo from "@/assets/images/logo.svg";
+import { executeAfter } from "@/helpers/general";
+import AppContainerBase from "@/layouts/AppContainerBase.vue";
+import CreateQueryModalPage from "@/modals/query/CreateQueryModalPage.vue";
+import router from "@/router";
+import CreateNewSheet from "@/sheets/create-new/CreateNewSheet.vue";
+import ProtectedView from "@/views/controller/ProtectedView.vue";
+import { nextTick, onMounted, onUpdated, ref } from "vue";
 
 const refCreateNewSheet = ref<InstanceType<typeof CreateNewSheet> | null>(null);
 const refCreateQueryModalPage = ref<InstanceType<typeof CreateQueryModalPage> | null>(null);

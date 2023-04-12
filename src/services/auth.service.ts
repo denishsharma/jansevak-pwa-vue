@@ -31,4 +31,7 @@ export default class AuthService {
         return useAsyncState(call("auth/me", "post", {}, {}).then(d => d.data), {}, useAxiosOptions(success, error));
     }
 
+    static resendOtp(data: { id: string }, success?: (data: any) => void, error?: (data: any) => void) {
+        return useAsyncState(call("auth/generate-otp", "post", { user_uuid: data.id }, {}).then(d => d.data), {}, useAxiosOptions(success, error));
+    }
 }

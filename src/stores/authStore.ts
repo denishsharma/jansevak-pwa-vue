@@ -1,8 +1,8 @@
+import { set } from "@vueuse/core";
 import { defineStore } from "pinia";
 import { ref } from "vue";
-import { set } from "@vueuse/core";
 
-type UserInterface = {
+interface UserInterface {
     id: string | null;
     token: string | null;
     refreshToken: string | null,

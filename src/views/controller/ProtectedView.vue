@@ -11,6 +11,7 @@
                         <div aria-label="loading" class="animate-spin inline-block w-6 h-6 border-[2px] border-current border-t-transparent text-orange-600 rounded-full" role="status"></div>
                     </div>
                 </div>
+
             </div>
             <transition v-else mode="out-in" name="fade">
                 <template v-if="isAuthenticated && isProfileCompleted && canRedirect">
@@ -24,7 +25,7 @@
         </transition>
 
         <AuthLoginModalPage ref="refAuthLoginModal" @on-close="onCloseAuthLoginModal" @on-login-success="handleLoginSuccess" />
-        <EditProfileModalPage ref="refEditProfileModal" :is-edit-profile="false" heading-left="Complete your" heading-right="Profile" subtitle="Enter your basic information to get started and get the most out of the platform." title="Complete Profile" />
+        <EditProfileModalPage ref="refEditProfileModal" :is-edit-profile="false" edit-mode="setup" heading-left="Complete your" heading-right="Profile" subtitle="Enter your basic information to get started and get the most out of the platform." title="Complete Profile" />
     </div>
 </template>
 
@@ -34,7 +35,7 @@ import { get, set, syncRef } from "@vueuse/core";
 import NotAuthenticatedAuthFragment from "@/fragments/auth/NotAuthenticatedAuthFragment.vue";
 import IncompleteProfileAuthFragment from "@/fragments/auth/IncompleteProfileAuthFragment.vue";
 import AuthLoginModalPage from "@/modals/auth/AuthLoginModalPage.vue";
-import EditProfileModalPage from "@/modals/edit-profile/EditProfileModalPage.vue";
+import EditProfileModalPage from "@/modals/profile/EditProfileModalPage.vue";
 import { useAuthStore } from "@/stores/authStore";
 import { storeToRefs } from "pinia";
 import AuthService from "@/services/auth.service";
@@ -123,7 +124,6 @@ const checkAuth = () => {
 };
 
 onMounted(() => {
-
     executeAfter(() => {
         checkAuth();
     }, 100);

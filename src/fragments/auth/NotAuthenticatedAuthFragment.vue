@@ -13,7 +13,7 @@
                 </div>
             </div>
 
-            <button class="py-3.5 mt-3 px-6 w-full font-medium text-xs select-none inline-flex justify-center items-center gap-2 rounded-lg border border-transparent bg-orange-500 text-white hover:bg-orange-600 active:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 transition-all" type="button" @click="$emit('on-login')">
+            <button class="py-3.5 mt-3 px-6 w-full font-medium text-xs select-none inline-flex justify-center items-center gap-2 rounded-lg border border-transparent bg-orange-500 text-white active:bg-orange-600 focus:outline-none transition-all" type="button" @click="$emit('on-login')">
                 Login to Continue
             </button>
         </AppComponentBase>

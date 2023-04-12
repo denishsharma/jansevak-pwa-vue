@@ -54,6 +54,30 @@ input, textarea {
     opacity: 0
 }
 
+.fade-scale-enter-active,
+.fade-scale-leave-active {
+    transition: opacity 0.3s, transform 0.3s;
+}
+
+.fade-scale-enter-from,
+.fade-scale-leave-to {
+    transform: scale(0.95);
+    opacity: 0;
+}
+
+.splide__pagination {
+    @apply flex gap-1 justify-center items-center;
+
+    &__page {
+        @apply bg-gray-100 h-2 w-2 rounded-full scale-75 transition-all;
+
+        &.is-active {
+            @apply bg-orange-500 scale-100;
+        }
+    }
+}
+
+
 .carousel__pagination-button {
     &::after {
         @apply h-2 w-2 rounded-full transition-all;
